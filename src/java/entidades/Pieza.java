@@ -8,7 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * Entidad Pieza para los distintas tipos de incidencia
+ * Entidad Pieza para los distintos tipos de incidencia
  *
  * @author Daniel Brizuela
  */
@@ -37,12 +37,6 @@ public class Pieza implements Serializable {
      * Stock disponible de la Pieza
      */
     private Integer stock;
-
-    /**
-     * Constructor vacio
-     */
-    public Pieza() {
-    }
 
     /**
      * Obtener el id
