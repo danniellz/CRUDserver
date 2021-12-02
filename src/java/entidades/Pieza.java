@@ -61,6 +61,15 @@ public class Pieza implements Serializable {
     }
 
     /**
+     * Serial Version UID
+     *
+     * @return devuelve el serialVersionUID
+     */
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    /**
      * Obtener el nombre
      *
      * @return devuelve el nombre de la Pieza
