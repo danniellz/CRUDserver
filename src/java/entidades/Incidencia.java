@@ -22,93 +22,155 @@ import javax.validation.constraints.NotNull;
  * @author Aritz Arrieta
  */
 @Entity
-@Table(name="gesredb",schema="gesredb")
+@Table(name="incidencia",schema="gesredb")
 
 public class Incidencia implements Serializable {
     
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+   /**
+    * integer identificador de la Indidencia
+    */
     private Integer id;
     
-  
+  /**
+   * integer estrellas para medir valoraciones
+   */
    
     private Integer estrellas;
-    
+    /**
+     * integer Horas para saber cuanto ha tardado el trabajador
+     */
    
     private Integer horas;
     
-   
+   /**
+    * Precio Final de la Incidencia
+    */
     private Double precio;
     
     //private Cliente cliente;
   
-   
+   /**
+    * enumeracion del Tipo de las Incidencias
+    */
     @NotNull
     @Enumerated(EnumType.STRING)
     private TipoIncidencia tipoInc;
     
-   
+   /**
+    * enumeracion del Estado de las Incidencias
+    */
     @NotNull
     @Enumerated(EnumType.STRING)
     private EstadoIncidencia estado;
 
     
     
-    //getters
+    /**
+     * 
+     * @return 
+     */
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
 
+    /**
+     * recive el numero de estrellas 
+     * @return estrellas
+     */
     public Integer getEstrellas() {
         return estrellas;
     }
 
+    /**
+     * recive el numero de Horas
+     * @return horas
+     */
     public Integer getHoras() {
         return horas;
     }
 
+    /**
+     * recive el precio de la Incidencia
+     * @return precio
+     */
     public Double getPrecio() {
         return precio;
     }
 
+    /**
+     *  recive de la enumeracion el Tipo de Incidencia
+     * @return tipoInc
+     */
     public TipoIncidencia getTipoInc() {
         return tipoInc;
     }
 
+    /**
+     * recive de la enumeracion el Estado de Incidencia
+     * @return estado
+     */ 
     public EstadoIncidencia getEstado() {
         return estado;
     }
     
-
+    /**
+     * Recive el Id de Incidencia
+     * @return
+     */
     public int getId() {
         return id;
     }
 
     
     //setters
+
+    /**
+     * Introduce el numero de estrellas
+     * @param estrellas
+     */
     public void setEstrellas(Integer estrellas) {
         this.estrellas = estrellas;
     }
 
+    /**
+     * Introduce el numero de horas
+     * @param horas
+     */
     public void setHoras(Integer horas) {
         this.horas = horas;
     }
 
+    /**
+     * Introduce el precio de la Incidencia
+     * @param precio
+     */
     public void setPrecio(Double precio) {
         this.precio = precio;
     }
 
+    /** 
+     * Introduce el tipo de Incidencia
+     * @param tipoInc
+     */
     public void setTipoInc(TipoIncidencia tipoInc) {
         this.tipoInc = tipoInc;
     }
 
+    /** 
+     * Introduce el Estado de la Incidencia
+     * @param estado
+     */
     public void setEstado(EstadoIncidencia estado) {
         this.estado = estado;
     }
     
-    
-    
+    /**
+     * Introduce el Id de la Incidencia
+     * @param id
+     */
     public void setId(int id) {
         this.id = id;
     }
@@ -139,18 +201,7 @@ public class Incidencia implements Serializable {
         return true;
     }
 
-   /* @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Incidencia)) {
-            return false;
-        }
-        Incidencia other = (Incidencia) object;
-        if (this.id != other.id) {
-            return false;
-        }
-        return true;
-    }*/
+ 
 
     @Override
     public String toString() {
