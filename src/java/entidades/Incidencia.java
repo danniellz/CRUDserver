@@ -28,23 +28,20 @@ public class Incidencia implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     
-    @Column
+  
     private Integer estrellas;
     
-    @Column
+  
     private Integer horas;
     
-    @Column
     private Double precio;
     
     //private Cliente cliente;
   
-    @Column
     @NotNull
     @Enumerated(EnumType.STRING)
     private TipoIncidencia tipoInc;
     
-    @Column
     @NotNull
     @Enumerated(EnumType.STRING)
     private EstadoIncidencia estado;
