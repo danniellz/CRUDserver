@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -22,11 +23,12 @@ import javax.validation.constraints.NotNull;
  * @author Jonathan Viñan
  */
 @Entity
+@Table(name = "signIn", schema = "gesredb")
 public class SignIn implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
-     *
+     * Id del signIn. Es la clave primaria de la tabla "signIn".
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,6 +41,7 @@ public class SignIn implements Serializable {
     private Timestamp lastSignIn;
 
     /**
+     * Método que obtiene el id del signIn.
      *
      * @return
      */
@@ -47,6 +50,7 @@ public class SignIn implements Serializable {
     }
 
     /**
+     * Método que establece el id del signIn.
      *
      * @param id
      */
