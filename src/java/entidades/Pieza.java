@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  * Entidad Pieza para los distintos tipos de incidencia
@@ -13,6 +15,8 @@ import javax.persistence.Id;
  * @author Daniel Brizuela
  */
 @Entity
+@Table(name = "pieza", schema = "gesredb")
+@NamedQuery(name = "findAllPiezas", query = "SELECT p FROM pieza p ORDER BY p.id DESC")
 public class Pieza implements Serializable {
 
     /**
