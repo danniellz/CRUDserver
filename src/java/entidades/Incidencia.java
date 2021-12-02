@@ -14,6 +14,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -21,6 +22,8 @@ import javax.validation.constraints.NotNull;
  * @author Aritz Arrieta
  */
 @Entity
+@Table(name="gesredb",schema="gesredb")
+
 public class Incidencia implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -29,19 +32,23 @@ public class Incidencia implements Serializable {
     private Integer id;
     
   
+   
     private Integer estrellas;
     
-  
+   
     private Integer horas;
     
+   
     private Double precio;
     
     //private Cliente cliente;
   
+   
     @NotNull
     @Enumerated(EnumType.STRING)
     private TipoIncidencia tipoInc;
     
+   
     @NotNull
     @Enumerated(EnumType.STRING)
     private EstadoIncidencia estado;
