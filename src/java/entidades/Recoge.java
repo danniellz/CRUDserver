@@ -6,19 +6,18 @@
 package entidades;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -27,6 +26,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name="recoge",schema="gesredb")
 
+@XmlRootElement
 public class Recoge implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,7 +43,7 @@ public class Recoge implements Serializable {
     @NotNull
     private Integer horasEstimadas;
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp  fechaRecogida;
+    private Date  fechaRecogida;
 
     // getters
 
@@ -88,7 +88,7 @@ public class Recoge implements Serializable {
      * Recoge la fecha de Recogida
      * @return Timestamp
      */
-    public Timestamp getFechaRecogida() {
+    public Date getFechaRecogida() {
         return fechaRecogida;
     }
     
@@ -132,8 +132,49 @@ public class Recoge implements Serializable {
      * Establece la Fecha Estimada
      * @param fechaRecogida
      */
-    public void setFechaRecogida(Timestamp fechaRecogida) {
+    public void setFechaRecogida(Date fechaRecogida) {
         this.fechaRecogida = fechaRecogida;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.idRecoge);
+        hash = 29 * hash + Objects.hashCode(this.trabajador);
+        hash = 29 * hash + Objects.hashCode(this.incidencia);
+        hash = 29 * hash + Objects.hashCode(this.horasEstimadas);
+        hash = 29 * hash + Objects.hashCode(this.fechaRecogida);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Recoge other = (Recoge) obj;
+        if (!Objects.equals(this.idRecoge, other.idRecoge)) {
+            return false;
+        }
+        if (!Objects.equals(this.trabajador, other.trabajador)) {
+            return false;
+        }
+        if (!Objects.equals(this.incidencia, other.incidencia)) {
+            return false;
+        }
+        if (!Objects.equals(this.horasEstimadas, other.horasEstimadas)) {
+            return false;
+        }
+        if (!Objects.equals(this.fechaRecogida, other.fechaRecogida)) {
+            return false;
+        }
+        return true;
     }
 
     

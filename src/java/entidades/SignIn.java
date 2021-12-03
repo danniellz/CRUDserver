@@ -6,7 +6,7 @@
 package entidades;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * * Clase que declara el estado SignIn del usuario.
@@ -24,6 +25,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "signIn", schema = "gesredb")
+@XmlRootElement
 public class SignIn implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -38,7 +40,7 @@ public class SignIn implements Serializable {
      */
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp lastSignIn;
+    private Date lastSignIn;
 
     /**
      * Método que obtiene el id del signIn.
@@ -63,7 +65,7 @@ public class SignIn implements Serializable {
      *
      * @return el último acceso que se va a mostrar.
      */
-    public Timestamp getLastSignIn() {
+    public Date getLastSignIn() {
         return lastSignIn;
     }
 
@@ -72,7 +74,7 @@ public class SignIn implements Serializable {
      *
      * @param LastSignIn el último acceso que se va a guardar.
      */
-    public void setLastSignIn(Timestamp lastSignIn) {
+    public void setLastSignIn(Date lastSignIn) {
         this.lastSignIn = lastSignIn;
     }
 
