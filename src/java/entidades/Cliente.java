@@ -19,8 +19,10 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name="cliente", schema="gesredb")
 public class Cliente extends Usuario implements Serializable {
+
     
     //Atributos
+
     
     /**
      * Relacion de incidencias
