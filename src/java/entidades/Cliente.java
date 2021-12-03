@@ -23,6 +23,7 @@ public class Cliente extends Usuario implements Serializable {
     
     //Atributos
 
+
     
     /**
      * Relacion de incidencias
