@@ -179,13 +179,16 @@ public class Pieza implements Serializable {
      */
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.id);
-        hash = 73 * hash + Objects.hashCode(this.nombre);
-        hash = 73 * hash + Objects.hashCode(this.descripcion);
-        hash = 73 * hash + Objects.hashCode(this.stock);
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.id);
+        hash = 97 * hash + Objects.hashCode(this.nombre);
+        hash = 97 * hash + Objects.hashCode(this.descripcion);
+        hash = 97 * hash + Objects.hashCode(this.stock);
+        hash = 97 * hash + Objects.hashCode(this.trabajador);
+        hash = 97 * hash + Objects.hashCode(this.incidencias);
         return hash;
     }
+
 
     /**
      * Metodo equals para comparar si dos objetos son iguales
@@ -205,7 +208,22 @@ public class Pieza implements Serializable {
             return false;
         }
         final Pieza other = (Pieza) obj;
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        if (!Objects.equals(this.descripcion, other.descripcion)) {
+            return false;
+        }
         if (!Objects.equals(this.id, other.id)) {
+            return false;
+        }
+        if (!Objects.equals(this.stock, other.stock)) {
+            return false;
+        }
+        if (!Objects.equals(this.trabajador, other.trabajador)) {
+            return false;
+        }
+        if (!Objects.equals(this.incidencias, other.incidencias)) {
             return false;
         }
         return true;
@@ -218,6 +236,7 @@ public class Pieza implements Serializable {
      */
     @Override
     public String toString() {
-        return "Pieza{" + "id=" + id + ", name=" + nombre + ", descripcion=" + descripcion + ", stock=" + stock + '}';
+        return "Pieza{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", stock=" + stock + ", trabajador=" + trabajador + ", incidencias=" + incidencias + '}';
     }
+
 }
