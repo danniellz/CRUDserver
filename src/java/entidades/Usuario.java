@@ -7,7 +7,6 @@ package entidades;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.Objects;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -30,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Jonathan Viañan
  */
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "UserPrivilege") //Columna que va a diferenciar a los distintos privilegios de usuario.
 @Table(name = "usuario", schema = "gesredb")
 @XmlRootElement
