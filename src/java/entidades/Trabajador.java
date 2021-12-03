@@ -8,9 +8,11 @@ package entidades;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -28,7 +30,7 @@ import javax.validation.constraints.NotNull;
 })
 @Entity
 @Table(name = "trabajador", schema = "gesredb")
-public class Trabajador implements Serializable {
+public class Trabajador extends Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -43,6 +45,13 @@ public class Trabajador implements Serializable {
      */
     @NotNull
     private Timestamp fechaContrato;
+
+    /**
+     * Relacion 1:N con Piezas
+     *
+     */
+    @OneToMany(mappedBy = "trabajador")
+    private Set<Pieza> piezas;
 
     /**
      * Metodo que obtine el pricio hora del trbajador
@@ -81,15 +90,32 @@ public class Trabajador implements Serializable {
     }
 
     /**
+     *Método que obtiene la colección de piezas.
+     * @return las piezas de la colección
+     */
+    public Set<Pieza> getPiezas() {
+        return piezas;
+    }
+
+    /**
+     *Método que establece la colección de piezas.
+     * @param piezas las piezas que se van a guardar
+     */
+    public void setPiezas(Set<Pieza> piezas) {
+        this.piezas = piezas;
+    }
+
+    /**
      * Método que compara el código hash de dos objetos.
      *
      * @return el código hash del objeto.
      */
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 71 * hash + Objects.hashCode(this.precioHora);
-        hash = 71 * hash + Objects.hashCode(this.fechaContrato);
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.precioHora);
+        hash = 97 * hash + Objects.hashCode(this.fechaContrato);
+        hash = 97 * hash + Objects.hashCode(this.piezas);
         return hash;
     }
 
@@ -115,6 +141,9 @@ public class Trabajador implements Serializable {
             return false;
         }
         if (!Objects.equals(this.fechaContrato, other.fechaContrato)) {
+            return false;
+        }
+        if (!Objects.equals(this.piezas, other.piezas)) {
             return false;
         }
         return true;
