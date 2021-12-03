@@ -130,7 +130,7 @@ public class Pieza implements Serializable {
     /**
      * Establecer el nombre
      *
-     * @param nombre
+     * @param nombre establece el nombre de la pieza
      */
     public void setNombre(String nombre) {
         this.nombre = nombre;
