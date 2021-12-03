@@ -1,14 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entidades;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Set;
+import static javax.persistence.CascadeType.ALL;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,18 +18,44 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="cliente", schema="gesredb")
-public class Cliente extends User implements Serializable {
+public class Cliente extends Usuario implements Serializable {
+    
+    //Atributos
     
     /**
-     * Fecha de regitro del cliente
+     * Relacion de incidencias
+     */
+    @OneToMany (cascade=ALL, mappedBy="cliente")
+    private Set<Incidencia> incidencias;
+    
+    /**
+     * Fecha de registro del cliente
      */
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp fechaRegistro;
     
+    //Getters & Setters
+
+    /**
+     * Metodo getter de incidencias
+     * @return Incidencias
+     */
+    public Set<Incidencia> getIncidencias() {
+        return incidencias;
+    }
+
+    /**
+     * Metodo setter de incidencias
+     * @param incidencias Incidencias
+     */
+    public void setIncidencias(Set<Incidencia> incidencias) {
+        this.incidencias = incidencias;
+    }
+    
     /**
      * Metodo getter de la fecha de registro
-     * @return feecha de registro
+     * @return fecha de registro
      */
     public Timestamp getFechaRegistro() {
         return fechaRegistro;
@@ -48,7 +72,8 @@ public class Cliente extends User implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 73 * hash + Objects.hashCode(this.fechaRegistro);
+        hash = 59 * hash + Objects.hashCode(this.incidencias);
+        hash = 59 * hash + Objects.hashCode(this.fechaRegistro);
         return hash;
     }
 
@@ -64,15 +89,15 @@ public class Cliente extends User implements Serializable {
             return false;
         }
         final Cliente other = (Cliente) obj;
-        if (!Objects.equals(this.fechaRegistro, other.fechaRegistro)) {
+        if (!Objects.equals(this.incidencias, other.incidencias)) {
             return false;
         }
-        return true;
+        return Objects.equals(this.fechaRegistro, other.fechaRegistro);
     }
 
     @Override
     public String toString() {
-        return "Cliente{" + "fechaRegistro=" + fechaRegistro + '}';
+        return "Cliente{" + "incidencias=" + incidencias + ", fechaRegistro=" + fechaRegistro + '}';
     }
     
 }
