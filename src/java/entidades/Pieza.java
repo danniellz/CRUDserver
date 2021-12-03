@@ -2,11 +2,13 @@ package entidades;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -16,11 +18,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "pieza", schema = "gesredb")
-@NamedQuery(name = "findAllPiezas", query = "SELECT p FROM pieza p ORDER BY p.id DESC")
 public class Pieza implements Serializable {
 
     /**
-     * Atributos
+     * ATRIBUTOS
      */
     private static final long serialVersionUID = 1L;
     /**
@@ -28,11 +29,12 @@ public class Pieza implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer id;
     /**
      * Nombre de la Pieza
      */
-    private String name;
+    private String nombre;
+
     /**
      * Descripcion de la Pieza
      */
@@ -41,13 +43,60 @@ public class Pieza implements Serializable {
      * Stock disponible de la Pieza
      */
     private Integer stock;
+    /**
+     * Relacion ManyToOne con trabajador
+     */
+    @ManyToOne
+    private Trabajador trabajador;
+    /**
+     * Relacion OneToMany con incidencias
+     */
+    @OneToMany(mappedBy="pieza")
+    private Set<Incidencia> incidencias;
+
+    //GETTERS y SETTERS
+    /**
+     * Obtener el trabajador
+     *
+     * @return devuelve el trabajador
+     */
+    public Trabajador getTrabajador() {
+        return trabajador;
+    }
+
+    /**
+     * Establecer el Trabajador
+     *
+     * @param trabajador establece el trabajador
+     */
+    public void setTrabajador(Trabajador trabajador) {
+        this.trabajador = trabajador;
+    }
+
+    /**
+     * Obtener las incidencias en las que se usa la Pieza
+     *
+     * @return devuelve las incidencias
+     */
+    public Set<Incidencia> getIncidencias() {
+        return incidencias;
+    }
+
+    /**
+     * Establecer las incidencias en las que se usa la Pieza
+     *
+     * @param incidencias establece las incidencias
+     */
+    public void setIncidencias(Set<Incidencia> incidencias) {
+        this.incidencias = incidencias;
+    }
 
     /**
      * Obtener el id
      *
      * @return devuleve el id de Pieza
      */
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -56,7 +105,7 @@ public class Pieza implements Serializable {
      *
      * @param id establece el id de Pieza
      */
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -74,17 +123,17 @@ public class Pieza implements Serializable {
      *
      * @return devuelve el nombre de la Pieza
      */
-    public String getName() {
-        return name;
+    public String getNombre() {
+        return nombre;
     }
 
     /**
      * Establecer el nombre
      *
-     * @param name establece el nombre de la Pieza
+     * @param nombre
      */
-    public void setName(String name) {
-        this.name = name;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     /**
@@ -132,7 +181,7 @@ public class Pieza implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 73 * hash + Objects.hashCode(this.id);
-        hash = 73 * hash + Objects.hashCode(this.name);
+        hash = 73 * hash + Objects.hashCode(this.nombre);
         hash = 73 * hash + Objects.hashCode(this.descripcion);
         hash = 73 * hash + Objects.hashCode(this.stock);
         return hash;
@@ -169,6 +218,6 @@ public class Pieza implements Serializable {
      */
     @Override
     public String toString() {
-        return "Pieza{" + "id=" + id + ", name=" + name + ", descripcion=" + descripcion + ", stock=" + stock + '}';
+        return "Pieza{" + "id=" + id + ", name=" + nombre + ", descripcion=" + descripcion + ", stock=" + stock + '}';
     }
 }

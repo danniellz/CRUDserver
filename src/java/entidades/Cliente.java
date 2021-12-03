@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name="cliente", schema="gesredb")
-public class Cliente extends User implements Serializable {
+public class Cliente extends Usuario implements Serializable {
     
     /**
      * Fecha de regitro del cliente
