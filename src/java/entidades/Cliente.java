@@ -1,7 +1,7 @@
 package entidades;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 import static javax.persistence.CascadeType.ALL;
@@ -36,7 +36,7 @@ public class Cliente extends Usuario implements Serializable {
      */
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp fechaRegistro;
+    private Date fechaRegistro;
     
     //Getters & Setters
 
@@ -60,7 +60,7 @@ public class Cliente extends Usuario implements Serializable {
      * Metodo getter de la fecha de registro
      * @return fecha de registro
      */
-    public Timestamp getFechaRegistro() {
+    public Date getFechaRegistro() {
         return fechaRegistro;
     }
 
@@ -68,7 +68,7 @@ public class Cliente extends Usuario implements Serializable {
      * Metodo setter de la fecha de registro
      * @param fechaRegistro Fecha de registro
      */
-    public void setFechaRegistro(Timestamp fechaRegistro) {
+    public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
     }
 
