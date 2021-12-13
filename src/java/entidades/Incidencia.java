@@ -137,6 +137,22 @@ public class Incidencia implements Serializable {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setRecoge(Set<Recoge> recoge) {
+        this.recoge = recoge;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public void setPieza(Pieza pieza) {
+        this.pieza = pieza;
+    }
+
     
     //setters
 
