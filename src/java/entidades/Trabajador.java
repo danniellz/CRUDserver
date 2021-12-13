@@ -46,7 +46,7 @@ public class Trabajador extends Usuario implements Serializable {
      * Fecha del contrato del Trabajador
      */
     @NotNull
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaContrato;
 
@@ -56,6 +56,17 @@ public class Trabajador extends Usuario implements Serializable {
      */
     @OneToMany(mappedBy = "trabajador")
     private Set<Pieza> piezas;
+
+    @OneToMany(mappedBy = "trabajador")
+    private Set<Recoge> recoge;
+
+    public Set<Recoge> getRecoge() {
+        return recoge;
+    }
+
+    public void setRecoge(Set<Recoge> recoge) {
+        this.recoge = recoge;
+    }
 
     /**
      * Metodo que obtine el pricio hora del trbajador
@@ -94,7 +105,8 @@ public class Trabajador extends Usuario implements Serializable {
     }
 
     /**
-     *Método que obtiene la colección de piezas.
+     * Método que obtiene la colección de piezas.
+     *
      * @return las piezas de la colección
      */
     public Set<Pieza> getPiezas() {
@@ -102,7 +114,8 @@ public class Trabajador extends Usuario implements Serializable {
     }
 
     /**
-     *Método que establece la colección de piezas.
+     * Método que establece la colección de piezas.
+     *
      * @param piezas las piezas que se van a guardar
      */
     public void setPiezas(Set<Pieza> piezas) {
@@ -117,9 +130,10 @@ public class Trabajador extends Usuario implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.precioHora);
-        hash = 97 * hash + Objects.hashCode(this.fechaContrato);
-        hash = 97 * hash + Objects.hashCode(this.piezas);
+        hash = 53 * hash + Objects.hashCode(this.precioHora);
+        hash = 53 * hash + Objects.hashCode(this.fechaContrato);
+        hash = 53 * hash + Objects.hashCode(this.piezas);
+        hash = 53 * hash + Objects.hashCode(this.recoge);
         return hash;
     }
 
@@ -150,6 +164,9 @@ public class Trabajador extends Usuario implements Serializable {
         if (!Objects.equals(this.piezas, other.piezas)) {
             return false;
         }
+        if (!Objects.equals(this.recoge, other.recoge)) {
+            return false;
+        }
         return true;
     }
 
@@ -160,7 +177,7 @@ public class Trabajador extends Usuario implements Serializable {
      */
     @Override
     public String toString() {
-        return "Trabajador{" + "precioHora=" + precioHora + ", fechaContrato=" + fechaContrato + '}';
+        return "Trabajador{" + "precioHora=" + precioHora + ", fechaContrato=" + fechaContrato + ", piezas=" + piezas + ", recoge=" + recoge + '}';
     }
 
 }

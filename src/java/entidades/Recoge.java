@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
@@ -30,9 +32,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Recoge implements Serializable {
 
     private static final long serialVersionUID = 1L;
+   
     @EmbeddedId
     private RecogeId idRecoge;
-    
     @MapsId("idUsuario")
     @ManyToOne
     private Trabajador trabajador;

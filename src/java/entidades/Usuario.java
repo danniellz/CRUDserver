@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "UserPrivilege") //Columna que va a diferenciar a los distintos privilegios de usuario.
 @Table(name = "usuario", schema = "gesredb")
 @XmlRootElement
 public class Usuario implements Serializable {
