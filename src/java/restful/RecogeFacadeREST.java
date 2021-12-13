@@ -24,7 +24,7 @@ import javax.ws.rs.core.PathSegment;
 
 /**
  *
- * @author 2dam
+ * @author JonY
  */
 @Stateless
 @Path("entidades.recoge")
@@ -36,21 +36,21 @@ public class RecogeFacadeREST extends AbstractFacade<Recoge> {
     private RecogeId getPrimaryKey(PathSegment pathSegment) {
         /*
          * pathSemgent represents a URI path segment and any associated matrix parameters.
-         * URI path part is supposed to be in form of 'somePath;trabajadorId=trabajadorIdValue;incidenciaId=incidenciaIdValue'.
+         * URI path part is supposed to be in form of 'somePath;trabajador_idUsuario=trabajador_idUsuarioValue;incidenciaId=incidenciaIdValue'.
          * Here 'somePath' is a result of getPath() method invocation and
          * it is ignored in the following code.
          * Matrix parameters are used as field names to build a primary key instance.
          */
         entidades.RecogeId key = new entidades.RecogeId();
         javax.ws.rs.core.MultivaluedMap<String, String> map = pathSegment.getMatrixParameters();
-        java.util.List<String> trabajadorId = map.get("trabajadorId");
-        /*if (trabajadorId != null && !trabajadorId.isEmpty()) {
-            key.setTrabajadorId(new java.lang.Integer(trabajadorId.get(0)));
+        java.util.List<String> trabajador_idUsuario = map.get("trabajador_idUsuario");
+        if (trabajador_idUsuario != null && !trabajador_idUsuario.isEmpty()) {
+            key.setTrabajador_idUsuario(new java.lang.Integer(trabajador_idUsuario.get(0)));
         }
         java.util.List<String> incidenciaId = map.get("incidenciaId");
         if (incidenciaId != null && !incidenciaId.isEmpty()) {
             key.setIncidenciaId(new java.lang.Integer(incidenciaId.get(0)));
-        }*/
+        }
         return key;
     }
 
@@ -60,14 +60,14 @@ public class RecogeFacadeREST extends AbstractFacade<Recoge> {
 
     @POST
     @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void create(Recoge entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") PathSegment id, Recoge entity) {
         super.edit(entity);
     }
@@ -89,28 +89,14 @@ public class RecogeFacadeREST extends AbstractFacade<Recoge> {
 
     @GET
     @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces({MediaType.APPLICATION_XML})
     public List<Recoge> findAll() {
         return super.findAll();
-    }
-
-    @GET
-    @Path("{from}/{to}")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Recoge> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
-        return super.findRange(new int[]{from, to});
-    }
-
-    @GET
-    @Path("count")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String countREST() {
-        return String.valueOf(super.count());
     }
 
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
