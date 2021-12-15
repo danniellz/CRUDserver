@@ -8,7 +8,9 @@ package entidades;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -29,7 +31,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Jonathan Viañan
  */
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "privilege") //Columna que va a diferenciar a los distintos tipos de usuario.
+@DiscriminatorValue("ADMIN")
 @Table(name = "usuario", schema = "gesredb")
 @XmlRootElement
 public class Usuario implements Serializable {
@@ -66,6 +70,7 @@ public class Usuario implements Serializable {
      * Privilegio del usuario, que puede ser ADMIN o USER.
      */
     @NotNull
+    @Column(insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
     private UserPrivilege privilege;
 

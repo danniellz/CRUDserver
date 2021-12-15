@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -17,21 +18,17 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Clase que define los atributos y los métodos de la entidad "Trabajador".
  *
  * @author Jonathan Viñan
  */
-//Queries para realizar opreciones en la base de datos
-@NamedQueries({
-    //Busca todos los TRabajadores y sus atributos 
-    @NamedQuery(
-            name = "listarTrabajadores", query = "SELECT t FROM Trabajador t"
-    )
-})
-@Entity
-@Table(name = "trabajador", schema = "gesredb")
+@Entity(name = "trabajador")
+@DiscriminatorValue("TRABAJADOR")
+@XmlRootElement
 public class Trabajador extends Usuario implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -46,7 +43,6 @@ public class Trabajador extends Usuario implements Serializable {
      * Fecha del contrato del Trabajador
      */
     @NotNull
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaContrato;
 
@@ -60,6 +56,7 @@ public class Trabajador extends Usuario implements Serializable {
     @OneToMany(mappedBy = "trabajador")
     private Set<Recoge> recoge;
 
+    @XmlTransient
     public Set<Recoge> getRecoge() {
         return recoge;
     }
@@ -109,6 +106,7 @@ public class Trabajador extends Usuario implements Serializable {
      *
      * @return las piezas de la colección
      */
+    @XmlTransient
     public Set<Pieza> getPiezas() {
         return piezas;
     }

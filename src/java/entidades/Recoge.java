@@ -11,8 +11,6 @@ import java.util.Date;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
@@ -20,19 +18,20 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Aritz Arrieta
  */
 @Entity
-@Table(name="recoge",schema="gesredb")
+@Table(name = "recoge", schema = "gesredb")
 
 @XmlRootElement
 public class Recoge implements Serializable {
 
     private static final long serialVersionUID = 1L;
-   
+
     @EmbeddedId
     private RecogeId idRecoge;
     @MapsId("idUsuario")
@@ -41,21 +40,16 @@ public class Recoge implements Serializable {
     @MapsId("incidenciaId")
     @ManyToOne
     private Incidencia incidencia;
-    
+
     @NotNull
     private Integer horasEstimadas;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date  fechaRecogida;
+    private Date fechaRecogida;
 
     // getters
-
-    
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
     /**
-     *  Obtiene de Id de Recoge
+     * Obtiene de Id de Recoge
+     *
      * @return Integer
      */
     public RecogeId getIdRecoge() {
@@ -64,22 +58,27 @@ public class Recoge implements Serializable {
 
     /**
      * Recoge la entidad Trabajador
+     *
      * @return trabajador
      */
+    @XmlTransient //Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con el trabajador
     public Trabajador getTrabajador() {
         return trabajador;
     }
 
     /**
      * Recoge la entidad Incidencia
+     *
      * @return incidencia
      */
+    @XmlTransient//Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con la incidencia
     public Incidencia getIncidencia() {
         return incidencia;
     }
 
     /**
      * Recoge las Horas estimadas
+     *
      * @return Integer
      */
     public Integer getHorasEstimadas() {
@@ -88,26 +87,26 @@ public class Recoge implements Serializable {
 
     /**
      * Recoge la fecha de Recogida
+     *
      * @return Timestamp
      */
     public Date getFechaRecogida() {
         return fechaRecogida;
     }
-    
 
-  //setters
-
-    /** 
+    //setters
+    /**
      * Establece el Id de Recoger
+     *
      * @param idRecoge
      */
-
     public void setIdRecoge(RecogeId idRecoge) {
         this.idRecoge = idRecoge;
     }
 
     /**
      * Establece un Trabajdor
+     *
      * @param trabajador
      */
     public void setTrabajador(Trabajador trabajador) {
@@ -116,6 +115,7 @@ public class Recoge implements Serializable {
 
     /**
      * Establece una Incidencia
+     *
      * @param incidencia
      */
     public void setIncidencia(Incidencia incidencia) {
@@ -124,6 +124,7 @@ public class Recoge implements Serializable {
 
     /**
      * Establece las horas estimadas
+     *
      * @param horasEstimadas
      */
     public void setHorasEstimadas(Integer horasEstimadas) {
@@ -132,6 +133,7 @@ public class Recoge implements Serializable {
 
     /**
      * Establece la Fecha Estimada
+     *
      * @param fechaRecogida
      */
     public void setFechaRecogida(Date fechaRecogida) {
@@ -179,12 +181,9 @@ public class Recoge implements Serializable {
         return true;
     }
 
-    
-
     @Override
     public String toString() {
         return "Recoge{" + "idRecoge=" + idRecoge + ", trabajador=" + trabajador + ", incidencia=" + incidencia + ", horasEstimadas=" + horasEstimadas + ", fechaRecogida=" + fechaRecogida + '}';
     }
-    
-    
+
 }

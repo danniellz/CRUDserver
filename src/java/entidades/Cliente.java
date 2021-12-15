@@ -4,44 +4,43 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Clase de la entidad Cliente
+ *
  * @author Mikel Matilla
  */
-@Entity
-@Table(name="cliente", schema="gesredb")
+@Entity(name = "cliente")
+@DiscriminatorValue("CLIENTE")
+@XmlRootElement
 public class Cliente extends Usuario implements Serializable {
 
-    
     //Atributos
-
-
-    
     /**
      * Relacion de incidencias
      */
-    @OneToMany (cascade=ALL, mappedBy="cliente")
+    @OneToMany(mappedBy = "cliente")
     private Set<Incidencia> incidencias;
-    
+
     /**
      * Fecha de registro del cliente
      */
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaRegistro;
-    
-    //Getters & Setters
 
+    //Getters & Setters
     /**
      * Metodo getter de incidencias
+     *
      * @return Incidencias
      */
     public Set<Incidencia> getIncidencias() {
@@ -50,14 +49,17 @@ public class Cliente extends Usuario implements Serializable {
 
     /**
      * Metodo setter de incidencias
+     *
      * @param incidencias Incidencias
      */
+    @XmlTransient
     public void setIncidencias(Set<Incidencia> incidencias) {
         this.incidencias = incidencias;
     }
-    
+
     /**
      * Metodo getter de la fecha de registro
+     *
      * @return fecha de registro
      */
     public Date getFechaRegistro() {
@@ -66,6 +68,7 @@ public class Cliente extends Usuario implements Serializable {
 
     /**
      * Metodo setter de la fecha de registro
+     *
      * @param fechaRegistro Fecha de registro
      */
     public void setFechaRegistro(Date fechaRegistro) {
@@ -102,5 +105,5 @@ public class Cliente extends Usuario implements Serializable {
     public String toString() {
         return "Cliente{" + "incidencias=" + incidencias + ", fechaRegistro=" + fechaRegistro + '}';
     }
-    
+
 }

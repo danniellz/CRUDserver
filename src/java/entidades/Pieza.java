@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Entidad Pieza para los distintos tipos de incidencia
@@ -18,6 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "pieza", schema = "gesredb")
+@XmlRootElement
 public class Pieza implements Serializable {
 
     /**
@@ -51,7 +54,7 @@ public class Pieza implements Serializable {
     /**
      * Relacion OneToMany con incidencias
      */
-    @OneToMany(mappedBy="pieza")
+    @OneToMany(mappedBy = "pieza")
     private Set<Incidencia> incidencias;
 
     //GETTERS y SETTERS
@@ -60,6 +63,7 @@ public class Pieza implements Serializable {
      *
      * @return devuelve el trabajador
      */
+    @XmlTransient//Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con el trabajador
     public Trabajador getTrabajador() {
         return trabajador;
     }
@@ -78,6 +82,7 @@ public class Pieza implements Serializable {
      *
      * @return devuelve las incidencias
      */
+    @XmlTransient
     public Set<Incidencia> getIncidencias() {
         return incidencias;
     }
@@ -107,15 +112,6 @@ public class Pieza implements Serializable {
      */
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    /**
-     * Serial Version UID
-     *
-     * @return devuelve el serialVersionUID
-     */
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
     }
 
     /**
@@ -188,7 +184,6 @@ public class Pieza implements Serializable {
         hash = 97 * hash + Objects.hashCode(this.incidencias);
         return hash;
     }
-
 
     /**
      * Metodo equals para comparar si dos objetos son iguales
