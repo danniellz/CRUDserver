@@ -15,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -25,6 +27,13 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Aritz Arrieta
  */
+@NamedQueries({
+   // @NamedQuery(name="findIncidenciaDeUnTrabajador",query="SELECT i FROM Incidencia i JOIN Recoge r JOIN Usuario u WHERE u.idUsuario=:idUsuario"),
+    
+    @NamedQuery(name="findIncidenciaDeUnUsuario", query="SELECT i FROM Incidencia i WHERE cliente_idUsuario LIKE:idUsuario")//,
+                                                        //SELECT incidencia.* FROM Incidencia  WHERE cliente_idUsuario = 2
+    //@NamedQuery(name="findIncidenciaDeUnUsuarioAcaba",query="SELECT distinct  i FROM  usuario u NATURAL JOIN  incidencia i WHERE u.idUsuario=:idUsuario  AND i.estado='CERRADO'")
+})
 @Entity
 @Table(name = "incidencia", schema = "gesredb")
 @XmlRootElement

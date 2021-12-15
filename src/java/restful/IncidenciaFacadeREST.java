@@ -13,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -22,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author JonY
+ * @author Aritz Arrieta
  */
 @Stateless
 @Path("entidades.incidencia")
@@ -61,14 +62,57 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     public Incidencia find(@PathParam("id") Integer id) {
         return super.find(id);
     }
-
+    //findIncidenciaDeUnTrabajador
+    /*@GET
+    @Path("/InciTrabajador/{idUsuario}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Incidencia>findIncidenciaDeUnTrabajador(@PathParam("idUsuario") Integer idUsuario) throws InternalServerErrorException{
+     List<Incidencia> incidencias=null;
+     try{
+         incidencias=em.createNamedQuery("findIncidenciaDeUnTrabajador")
+                 .setParameter("idUsuario", idUsuario)
+                 .getResultList();
+             
+     }catch(Exception e){
+         
+     throw new InternalServerErrorException(e);
+     
+     }
+    return incidencias;
+    
+    }
+*/
+     //findIncidenciaDeUnUsuario
+    @GET
+    @Path("/InciUsuario/{idUsuario}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Incidencia>findIncidenciaDeUnUsuario(@PathParam("idUsuario") Integer idUsuario) throws InternalServerErrorException{
+     List<Incidencia> incidencias=null;
+     try{
+         incidencias=em.createNamedQuery("findIncidenciaDeUnUsuario")
+                 .setParameter("idUsuario", idUsuario)
+                 .getResultList();
+             
+     }catch(Exception e){
+         
+     throw new InternalServerErrorException(e);
+     
+     }
+    return incidencias;
+    
+    }
+    //findIncidenciaDeUnUsuarioAcaba
+    
+    
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
     public List<Incidencia> findAll() {
         return super.findAll();
     }
-
+   
+    
+   
     @Override
     protected EntityManager getEntityManager() {
         return em;
