@@ -65,12 +65,38 @@ public class PiezaFacadeREST extends AbstractFacade<Pieza> {
     }
     
     @GET
-    @Path("/findAllPiezaInStock")
+    @Path("findAllPiezaInStockByTrabajadorId/{idUsuario}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Pieza> findAllPiezaInStock () {
+    public List<Pieza> findAllPiezaInStock (@PathParam("idUsuario") String idUsuario) {
         List<Pieza> piezas = null;
         try{
-            piezas = em.createNamedQuery("findAllPiezaInStock").getResultList();
+            piezas = em.createNamedQuery("findAllPiezaInStockByTrabajadorId").setParameter("idUsuario", idUsuario).getResultList();
+        }catch(Exception ex){
+            System.out.println("error");
+        }
+        return piezas;
+    }
+    
+    @GET
+    @Path("findPiezaByName/{nombre}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Pieza> findAllPiezaByName (@PathParam("nombre") String nombre) {
+        List<Pieza> piezas = null;
+        try{
+            piezas = em.createNamedQuery("findAllPiezaByName").setParameter("nombre", nombre).getResultList();
+        }catch(Exception ex){
+            System.out.println("error");
+        }
+        return piezas;
+    }
+    
+    @GET
+    @Path("findAllPiezaByTrabajadorId/{idUsuario}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Pieza> findAllPiezaByTrabajadorId (@PathParam("idUsuario") String idUsuario) {
+        List<Pieza> piezas = null;
+        try{
+            piezas = em.createNamedQuery("findAllPiezaByTrabajadorId").setParameter("idUsuario", idUsuario).getResultList();
         }catch(Exception ex){
             System.out.println("error");
         }

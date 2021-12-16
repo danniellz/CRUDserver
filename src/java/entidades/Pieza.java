@@ -21,8 +21,9 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Daniel Brizuela
  */
 @NamedQueries({
-    @NamedQuery(name = "findAllPiezaInStock", query = "SELECT p FROM Pieza p WHERE p.stock>0"),
-    //@NamedQuery(name = "findAllPiezaByName", query = "SELECT p FROM pieza p WHERE p.name LIKE CONCAT('%',:name,'%')")
+    @NamedQuery(name = "findAllPiezaInStockByTrabajadorId", query = "SELECT p FROM Pieza p WHERE p.stock>0 and trabajador_idUsuario LIKE :idUsuario"),
+    @NamedQuery(name = "findAllPiezaByName", query = "SELECT p FROM Pieza p WHERE p.nombre LIKE :nombre"),
+    @NamedQuery(name = "findAllPiezaByTrabajadorId", query = "SELECT p FROM Pieza p WHERE trabajador_idUsuario LIKE :idUsuario")
 }
 )
 @Entity
