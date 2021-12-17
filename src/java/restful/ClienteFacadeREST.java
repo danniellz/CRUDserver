@@ -74,4 +74,28 @@ public class ClienteFacadeREST extends AbstractFacade<Cliente> {
         return em;
     }
 
+    @GET
+    @Path("findAllClienteWithIncidencia")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Cliente> findAllClienteWithIncidencia() {
+        List<Cliente> clientes = null;
+        try {
+            clientes = em.createNamedQuery("findAllClienteWithIncidencia").getResultList();
+        } catch (Exception e) {
+        }
+        return clientes;
+    }
+    
+    @GET
+    @Path("findClienteByFullName/{fullName}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Cliente> findClienteByFullName(@PathParam("fullName") String fullName) {
+        List<Cliente> clientes = null;
+        try {
+            clientes = em.createNamedQuery("findClienteByFullName").setParameter("fullName", fullName).getResultList();
+        } catch (Exception e) {
+        }
+        return clientes;
+    }
+    
 }
