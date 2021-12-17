@@ -19,6 +19,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,8 +30,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * // * Clase que define los atributos y los métodos de la entidad "Usuario".
  *
- * @author Jonathan Viañan
+ * @author Jonathan Viañan y Aritz Arrieta
  */
+@NamedQueries({
+    @NamedQuery(name="BuscarUser",query="SELECT u FROM Usuario u WHERE u.login LIKE:login")
+        
+})
+
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "privilege") //Columna que va a diferenciar a los distintos tipos de usuario.

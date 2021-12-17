@@ -63,7 +63,7 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
         return super.find(id);
     }
     //findIncidenciaDeUnTrabajador
-    /*@GET
+    @GET
     @Path("/InciTrabajador/{idUsuario}")
     @Produces({MediaType.APPLICATION_XML})
     public List<Incidencia>findIncidenciaDeUnTrabajador(@PathParam("idUsuario") Integer idUsuario) throws InternalServerErrorException{
@@ -81,7 +81,7 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     return incidencias;
     
     }
-*/
+
      //findIncidenciaDeUnUsuario
     @GET
     @Path("/InciUsuario/{idUsuario}")
@@ -101,8 +101,25 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     return incidencias;
     
     }
-    //findIncidenciaDeUnUsuarioAcaba
+    //findIncidenciaDeUnUsuarioCerrada
+      @GET
+    @Path("/InciAcabadaUsuario/{idUsuario}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Incidencia>findIncidenciaAcabadaDeUnUsuario(@PathParam("idUsuario") Integer idUsuario) throws InternalServerErrorException{
+     List<Incidencia> incidencias=null;
+     try{
+         incidencias=em.createNamedQuery("findIncidenciaDeUnUsuarioAcabada")
+                 .setParameter("idUsuario", idUsuario)
+                 .getResultList();
+             
+     }catch(Exception e){
+         
+     throw new InternalServerErrorException(e);
+     
+     }
+    return incidencias;
     
+    }
     
     @GET
     @Override

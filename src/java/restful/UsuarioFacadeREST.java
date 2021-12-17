@@ -6,13 +6,16 @@
 package restful;
 
 import entidades.Usuario;
+import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Random;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -22,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author JonY
+ * @author Jonathan
  */
 @Stateless
 @Path("entidades.usuario")
@@ -68,7 +71,52 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     public List<Usuario> findAll() {
         return super.findAll();
     }
-
+    
+    @GET
+    @Path("/buscarUsuario/{login}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Usuario findUserByLogin(@PathParam("login") String login) {
+          Usuario usuarios=null;
+     try{
+         usuarios=(Usuario) em.createNamedQuery("BuscarUser")
+                 .setParameter("login", login)
+                 .getSingleResult();
+             
+     }catch(Exception e){
+         
+     throw new InternalServerErrorException(e);
+     
+     }
+    return usuarios;
+    }
+    
+    @GET
+     @Path("/resetPassword/{login}")
+    public void resetPasswordByPassword(@PathParam("login") String login){
+        Usuario usuarios= null;
+         try{
+         usuarios=findUserByLogin(login);
+         if(usuarios.getLogin().isEmpty()){
+             //salida 
+         }else{
+             //RESET PASSWORD
+             
+                    //generar nueva contraseña
+                    byte[] rndPassword = new byte[8]; 
+                    new Random().nextBytes(rndPassword);
+                    String newPassword = new String(rndPassword, Charset.forName("UTF-8"));
+           
+             //hash password
+             usuarios.setPassword(newPassword);
+             em.merge(usuarios);
+             
+         }
+             
+     }catch(Exception e){   
+     throw new InternalServerErrorException(e);
+     }
+   
+    }
     @Override
     protected EntityManager getEntityManager() {
         return em;

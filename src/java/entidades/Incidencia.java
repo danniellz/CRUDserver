@@ -28,12 +28,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Aritz Arrieta
  */
 @NamedQueries({
-   // @NamedQuery(name="findIncidenciaDeUnTrabajador",query="SELECT i FROM Incidencia i JOIN Recoge r JOIN Usuario u WHERE u.idUsuario=:idUsuario"),
-    
-    @NamedQuery(name="findIncidenciaDeUnUsuario", query="SELECT i FROM Incidencia i WHERE cliente_idUsuario LIKE:idUsuario")//,
+    @NamedQuery(name="findIncidenciaDeUnTrabajador",query="SELECT i FROM Incidencia i , Recoge r , Usuario u WHERE u.idUsuario LIKE:idUsuario AND r.idRecoge.trabajador_idUsuario = u.idUsuario AND r.incidencia.id = i.id"),
+                                                         //SELECT Distinct i.* FROM Incidencia i JOIN Recoge r JOIN Usuario u WHERE u.idUsuario = 4
+    @NamedQuery(name="findIncidenciaDeUnUsuario", query="SELECT i FROM Incidencia i WHERE cliente_idUsuario LIKE:idUsuario"),
                                                         //SELECT incidencia.* FROM Incidencia  WHERE cliente_idUsuario = 2
-    //@NamedQuery(name="findIncidenciaDeUnUsuarioAcaba",query="SELECT distinct  i FROM  usuario u NATURAL JOIN  incidencia i WHERE u.idUsuario=:idUsuario  AND i.estado='CERRADO'")
+    @NamedQuery(name="findIncidenciaDeUnUsuarioAcabada",query="SELECT i FROM Incidencia i WHERE cliente_idUsuario LIKE:idUsuario AND i.estado='CERRADO'")
 })
+
 @Entity
 @Table(name = "incidencia", schema = "gesredb")
 @XmlRootElement
