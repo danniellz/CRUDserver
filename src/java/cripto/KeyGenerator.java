@@ -34,7 +34,7 @@ public class KeyGenerator {
              * Key Publica
              *
              * Se generan los archivos que van a tener las key para el cifrado
-             * el order al generar las claves no importa (ky publica y privada o
+             * el order al generar las claves no importa (key publica y privada o
              * viceversa)
              */
             //Ruta de guardado de la clave
