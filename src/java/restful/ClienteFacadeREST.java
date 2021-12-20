@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author JonY
+ * @author Mikel Matilla
  */
 @Stateless
 @Path("entidades.cliente")

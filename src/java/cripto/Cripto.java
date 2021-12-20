@@ -8,7 +8,7 @@ import javax.crypto.Cipher;
 /**
  * Clase de Cifrado
  *
- * @author Daniel Brizuela
+ * @author Daniel Brizuela, Aritz Arrieta
  */
 public class Cripto {
 

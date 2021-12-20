@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 /**
  * Clase para leer la clave publica
  *
- * @author Daniel Brizuela
+ * @author Daniel Brizuela, Aritz Arrieta
  */
 public class PublicKeyReader {
 

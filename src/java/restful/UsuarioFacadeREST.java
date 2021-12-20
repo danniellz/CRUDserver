@@ -25,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author Jonathan Viñan, Aritz Arrieta
+ * @author Jonathan Viñan y Aritz Arrieta
  */
 @Stateless
 @Path("entidades.usuario")

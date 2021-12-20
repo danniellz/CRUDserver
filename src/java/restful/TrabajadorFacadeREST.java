@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author Jonathan
+ * @author Jonathan Viñan
  */
 @Stateless
 @Path("entidades.trabajador")

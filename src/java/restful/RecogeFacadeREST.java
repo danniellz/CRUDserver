@@ -24,7 +24,7 @@ import javax.ws.rs.core.PathSegment;
 
 /**
  *
- * @author Jonathan
+ * @author Jonathan Viñan y Aritz Arrieta
  */
 @Stateless
 @Path("entidades.recoge")

@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author 2dam
+ * @author Jonathan Viñan
  */
 @Stateless
 @Path("entidades.signin")
