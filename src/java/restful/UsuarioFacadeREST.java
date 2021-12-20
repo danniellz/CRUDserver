@@ -143,7 +143,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     @GET
     @Path("/buscarUsuario/{login}")
     @Produces({MediaType.APPLICATION_XML})
-    public Usuario BuscarUser(@PathParam("login") String login) {
+    public Usuario buscarUser(@PathParam("login") String login) {
         Usuario u;
         try {
             u = (Usuario) em.createNamedQuery("BuscarUser").setParameter("login", login).getSingleResult();
@@ -173,7 +173,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
         Usuario u = null;
         Usuario x = null;
         try {
-            u = buscarLogin(login);
+            u = buscarUser(login);
             if (u.getLogin().isEmpty()) {
 
             } else {
