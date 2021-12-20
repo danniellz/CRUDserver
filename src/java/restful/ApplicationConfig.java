@@ -33,6 +33,7 @@ public class ApplicationConfig extends Application {
         resources.add(restful.IncidenciaFacadeREST.class);
         resources.add(restful.PiezaFacadeREST.class);
         resources.add(restful.RecogeFacadeREST.class);
+        resources.add(restful.SignInFacadeREST.class);
         resources.add(restful.TrabajadorFacadeREST.class);
         resources.add(restful.UsuarioFacadeREST.class);
     }

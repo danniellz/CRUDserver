@@ -6,7 +6,9 @@
 package restful;
 
 import entidades.Pieza;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -60,6 +62,19 @@ public class PiezaFacadeREST extends AbstractFacade<Pieza> {
     @Produces({MediaType.APPLICATION_XML})
     public Pieza find(@PathParam("id") Integer id) {
         return super.find(id);
+    }
+    
+    @GET
+    @Path("/findAllPiezaInStock")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Pieza> findAllPiezaInStock () {
+        List<Pieza> piezas = null;
+        try{
+            piezas = em.createNamedQuery("findAllPiezaInStock").getResultList();
+        }catch(Exception ex){
+            System.out.println("error");
+        }
+        return piezas;
     }
 
     @GET
