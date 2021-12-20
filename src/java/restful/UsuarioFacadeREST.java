@@ -92,6 +92,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
 
    @GET
     @Path("/resetPassword/{login}")
+    @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByLogin(@PathParam("login") String login) {
         Usuario usuarios = null;
         try {
@@ -140,20 +141,9 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
         return usuario;
     }
 
-    @GET
-    @Path("/buscarUsuario/{login}")
-    @Produces({MediaType.APPLICATION_XML})
-    public Usuario buscarUser(@PathParam("login") String login) {
-        Usuario u;
-        try {
-            u = (Usuario) em.createNamedQuery("BuscarUser").setParameter("login", login).getSingleResult();
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage());
-        }
-        return u;
-    }
+  
 
-    @GET
+   @GET
     @Path("/buscarUsuarioPorEmail/{correo}")
     @Produces({MediaType.APPLICATION_XML})
     public Usuario buscarEmail(@PathParam("correo") String email) {
@@ -173,7 +163,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
         Usuario u = null;
         Usuario x = null;
         try {
-            u = buscarUser(login);
+            u = findUserByLogin(login);
             if (u.getLogin().isEmpty()) {
 
             } else {
