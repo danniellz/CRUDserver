@@ -219,14 +219,7 @@ public class Incidencia implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 83 * hash + Objects.hashCode(this.id);
-        hash = 83 * hash + Objects.hashCode(this.estrellas);
-        hash = 83 * hash + Objects.hashCode(this.horas);
-        hash = 83 * hash + Objects.hashCode(this.precio);
-        hash = 83 * hash + Objects.hashCode(this.recoge);
-        hash = 83 * hash + Objects.hashCode(this.cliente);
-        hash = 83 * hash + Objects.hashCode(this.pieza);
-        hash = 83 * hash + Objects.hashCode(this.tipoIncidencia);
-        hash = 83 * hash + Objects.hashCode(this.estado);
+       
         return hash;
     }
 

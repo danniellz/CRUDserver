@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -50,13 +51,13 @@ public class Trabajador extends Usuario implements Serializable {
      * Relacion 1:N con Piezas
      *
      */
-    @OneToMany(mappedBy = "trabajador")
+    @OneToMany(mappedBy = "trabajador",fetch= FetchType.EAGER)
     private Set<Pieza> piezas;
 
-    @OneToMany(mappedBy = "trabajador")
+    @OneToMany(mappedBy = "trabajador",fetch= FetchType.EAGER)
     private Set<Recoge> recoge;
 
-    @XmlTransient
+   // @XmlTransient
     public Set<Recoge> getRecoge() {
         return recoge;
     }
@@ -106,7 +107,7 @@ public class Trabajador extends Usuario implements Serializable {
      *
      * @return las piezas de la colección
      */
-    @XmlTransient
+    //@XmlTransient
     public Set<Pieza> getPiezas() {
         return piezas;
     }
@@ -125,7 +126,7 @@ public class Trabajador extends Usuario implements Serializable {
      *
      * @return el código hash del objeto.
      */
-    @Override
+   /* @Override
     public int hashCode() {
         int hash = 7;
         hash = 53 * hash + Objects.hashCode(this.precioHora);
@@ -133,7 +134,7 @@ public class Trabajador extends Usuario implements Serializable {
         hash = 53 * hash + Objects.hashCode(this.piezas);
         hash = 53 * hash + Objects.hashCode(this.recoge);
         return hash;
-    }
+    }*/
 
     /**
      * Método que compara si un objeto es igual al objeto "Trabajador".

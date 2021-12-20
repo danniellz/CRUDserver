@@ -177,11 +177,7 @@ public class Pieza implements Serializable {
     public int hashCode() {
         int hash = 3;
         hash = 97 * hash + Objects.hashCode(this.id);
-        hash = 97 * hash + Objects.hashCode(this.nombre);
-        hash = 97 * hash + Objects.hashCode(this.descripcion);
-        hash = 97 * hash + Objects.hashCode(this.stock);
-        hash = 97 * hash + Objects.hashCode(this.trabajador);
-        hash = 97 * hash + Objects.hashCode(this.incidencias);
+       
         return hash;
     }
 

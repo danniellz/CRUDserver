@@ -71,52 +71,57 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     public List<Usuario> findAll() {
         return super.findAll();
     }
-    
+
     @GET
     @Path("/buscarUsuario/{login}")
     @Produces({MediaType.APPLICATION_XML})
     public Usuario findUserByLogin(@PathParam("login") String login) {
-          Usuario usuarios=null;
-     try{
-         usuarios=(Usuario) em.createNamedQuery("BuscarUser")
-                 .setParameter("login", login)
-                 .getSingleResult();
-             
-     }catch(Exception e){
-         
-     throw new InternalServerErrorException(e);
-     
-     }
-    return usuarios;
+        Usuario usuarios = null;
+        try {
+            usuarios = (Usuario) em.createNamedQuery("BuscarUser")
+                    .setParameter("login", login)
+                    .getSingleResult();
+
+        } catch (Exception e) {
+
+            throw new InternalServerErrorException(e);
+
+        }
+        return usuarios;
     }
-    
-    @GET
-     @Path("/resetPassword/{login}")
-    public void resetPasswordByPassword(@PathParam("login") String login){
-        Usuario usuarios= null;
-         try{
-         usuarios=findUserByLogin(login);
-         if(usuarios.getLogin().isEmpty()){
-             //salida 
-         }else{
-             //RESET PASSWORD
+
+   @GET
+    @Path("/resetPassword/{login}")
+    public void resetPasswordByLogin(@PathParam("login") String login) {
+        Usuario usuarios = null;
+        try {
+            usuarios = findUserByLogin(login);
+            if (usuarios.getLogin().isEmpty()) {
              
-                    //generar nueva contraseña
-                    byte[] rndPassword = new byte[8]; 
-                    new Random().nextBytes(rndPassword);
-                    String newPassword = new String(rndPassword, Charset.forName("UTF-8"));
-           
-             //hash password
-             usuarios.setPassword(newPassword);
-             em.merge(usuarios);
-             
-         }
-             
-     }catch(Exception e){   
-     throw new InternalServerErrorException(e);
-     }
-   
+            } else {
+                //RESET PASSWORD
+
+                //generar nueva contraseña
+                Random rand = new Random(); //instance of random class
+
+               
+                int int_random = rand.nextInt(99999999 - 00000000) + 99999999;
+                String newPassword = null;
+                newPassword = String.valueOf(int_random);
+                // int_random= Integer.parseInt(newPassword);
+                usuarios.setPassword(newPassword);
+                if (!em.contains(usuarios)) {
+                    em.merge(usuarios);
+                }
+                em.flush();
+            }
+
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e);
+        }
+
     }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
