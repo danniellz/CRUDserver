@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entidades;
 
 import java.io.Serializable;
@@ -19,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * * Clase que declara el estado SignIn del usuario.
+ * Clase que declara el estado SignIn del usuario
  *
  * @author Jonathan Viñan
  */
@@ -114,6 +109,15 @@ public class SignIn implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    @Override
+    public String toString() {
+        return "SignIn{" + "id=" + id + ", lastSignIn=" + lastSignIn + '}';
     }
 
 }

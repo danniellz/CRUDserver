@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author JonY
+ * @author Jonathan
  */
 @Stateless
 @Path("entidades.trabajador")
@@ -74,4 +74,28 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
         return em;
     }
 
+    @GET
+    @Path("buscarTodosLosTrabajadores")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Trabajador> BuscarTodosLosTrabajadores() {
+        List<Trabajador> trabajadores = null;
+        try {
+            trabajadores = em.createNamedQuery("buscarTodosLosTrabajadores").getResultList();
+        } catch (Exception ex) {
+            System.out.println("error");
+        }
+        return trabajadores;
+    }
+
+    @GET
+    @Path("trabajadoresSinIncidenciasPorId")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Trabajador> trabajadoresSinIncidenciasPorId() {
+        List<Trabajador> trabajadores = null;
+        try {
+            trabajadores = (List<Trabajador>) em.createNamedQuery("trabajadoresSinIncidenciasPorId").getResultList();
+        } catch (Exception e) {
+        }
+        return trabajadores;
+    }
 }

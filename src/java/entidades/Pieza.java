@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -18,6 +20,13 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Daniel Brizuela
  */
+@NamedQueries({
+    @NamedQuery(name = "findAllPiezaInStockByTrabajadorId", query = "SELECT p FROM Pieza p WHERE p.stock>0 and trabajador_idUsuario LIKE :idUsuario")
+    ,
+    @NamedQuery(name = "findAllPiezaByName", query = "SELECT p FROM Pieza p WHERE p.nombre LIKE :nombre")
+    ,
+    @NamedQuery(name = "findAllPiezaByTrabajadorId", query = "SELECT p FROM Pieza p WHERE trabajador_idUsuario LIKE :idUsuario")}
+)
 @Entity
 @Table(name = "pieza", schema = "gesredb")
 @XmlRootElement
@@ -63,7 +72,7 @@ public class Pieza implements Serializable {
      *
      * @return devuelve el trabajador
      */
-    @XmlTransient//Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con el trabajador
+    //@XmlTransient//Si se quita la anotacion aparence toda la informcaion relacionada con el trabajador
     public Trabajador getTrabajador() {
         return trabajador;
     }

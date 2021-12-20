@@ -7,6 +7,8 @@ import java.util.Set;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -19,6 +21,15 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Mikel Matilla
  */
+
+@NamedQueries({
+    @NamedQuery(name = "findAllClienteWithIncidencia", query = "SELECT c FROM cliente c, Incidencia i WHERE c.idUsuario=i.cliente"),
+        //SQL: select distinct usuario.* from usuario,incidencia where usuario.idUsuario = incidencia.cliente_idUsuario
+    @NamedQuery(name = "findClienteByFullName", query = "SELECT c FROM cliente c WHERE c.fullName LIKE:fullName")
+        //SQL: SELECT usuario.* FROM usuario WHERE usuario.fullName="" AND privilege="CLIENTE"
+}
+)
+
 @Entity(name = "cliente")
 @DiscriminatorValue("CLIENTE")
 @XmlRootElement
