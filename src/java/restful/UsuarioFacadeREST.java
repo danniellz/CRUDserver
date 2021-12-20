@@ -6,7 +6,9 @@
 package restful;
 
 import entidades.Usuario;
+import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Random;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -23,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author Jonathan Viñan
+ * @author Jonathan Viñan, Aritz Arrieta
  */
 @Stateless
 @Path("entidades.usuario")
@@ -70,6 +72,56 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
         return super.findAll();
     }
 
+    @GET
+    @Path("/buscarUsuario/{login}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Usuario findUserByLogin(@PathParam("login") String login) {
+        Usuario usuarios = null;
+        try {
+            usuarios = (Usuario) em.createNamedQuery("BuscarUser")
+                    .setParameter("login", login)
+                    .getSingleResult();
+
+        } catch (Exception e) {
+
+            throw new InternalServerErrorException(e);
+
+        }
+        return usuarios;
+    }
+
+   @GET
+    @Path("/resetPassword/{login}")
+    public void resetPasswordByLogin(@PathParam("login") String login) {
+        Usuario usuarios = null;
+        try {
+            usuarios = findUserByLogin(login);
+            if (usuarios.getLogin().isEmpty()) {
+             
+            } else {
+                //RESET PASSWORD
+
+                //generar nueva contraseña
+                Random rand = new Random(); //instance of random class
+
+               
+                int int_random = rand.nextInt(99999999 - 00000000) + 99999999;
+                String newPassword = null;
+                newPassword = String.valueOf(int_random);
+                // int_random= Integer.parseInt(newPassword);
+                usuarios.setPassword(newPassword);
+                if (!em.contains(usuarios)) {
+                    em.merge(usuarios);
+                }
+                em.flush();
+            }
+
+        } catch (Exception e) {
+            throw new InternalServerErrorException(e);
+        }
+
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
@@ -91,10 +143,10 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     @GET
     @Path("/buscarUsuario/{login}")
     @Produces({MediaType.APPLICATION_XML})
-    public Usuario buscarLogin(@PathParam("login") String login) {
+    public Usuario BuscarUser(@PathParam("login") String login) {
         Usuario u;
         try {
-            u = (Usuario) em.createNamedQuery("buscarLogin").setParameter("login", login).getSingleResult();
+            u = (Usuario) em.createNamedQuery("BuscarUser").setParameter("login", login).getSingleResult();
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
         }

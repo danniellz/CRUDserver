@@ -17,7 +17,7 @@ import javax.persistence.Embeddable;
 public class RecogeId implements Serializable {
 
     private Integer trabajador_idUsuario;
-    private Integer incidenciaId;
+    private Integer incidencia_id;
 
     public Integer getTrabajador_idUsuario() {
         return trabajador_idUsuario;
@@ -27,19 +27,19 @@ public class RecogeId implements Serializable {
         this.trabajador_idUsuario = trabajador_idUsuario;
     }
 
-    public Integer getIncidenciaId() {
-        return incidenciaId;
+    public Integer getIncidencia_id() {
+        return incidencia_id;
     }
 
-    public void setIncidenciaId(Integer incidenciaId) {
-        this.incidenciaId = incidenciaId;
+    public void setIncidencia_id(Integer incidencia_id) {
+        this.incidencia_id = incidencia_id;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 59 * hash + Objects.hashCode(this.trabajador_idUsuario);
-        hash = 59 * hash + Objects.hashCode(this.incidenciaId);
+        hash = 59 * hash + Objects.hashCode(this.incidencia_id);
         return hash;
     }
 
@@ -58,7 +58,7 @@ public class RecogeId implements Serializable {
         if (!Objects.equals(this.trabajador_idUsuario, other.trabajador_idUsuario)) {
             return false;
         }
-        if (!Objects.equals(this.incidenciaId, other.incidenciaId)) {
+        if (!Objects.equals(this.incidencia_id, other.incidencia_id)) {
             return false;
         }
         return true;
@@ -66,7 +66,7 @@ public class RecogeId implements Serializable {
 
     @Override
     public String toString() {
-        return "RecogeId{" + "trabajador_idUsuario=" + trabajador_idUsuario + ", incidenciaId=" + incidenciaId + '}';
+        return "RecogeId{" + "trabajador_idUsuario=" + trabajador_idUsuario + ", incidenciaId=" + incidencia_id + '}';
     }
 
 }

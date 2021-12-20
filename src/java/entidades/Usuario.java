@@ -30,12 +30,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * // * Clase que define los atributos y los métodos de la entidad "Usuario".
  *
- * @author Jonathan Viñan
+ * @author Jonathan Viañan y Aritz Arrieta
  */
 @NamedQueries({
-    @NamedQuery(name = "todoLosUsuarios", query = "SELECT u FROM Usuario u")
+    @NamedQuery(name="BuscarUser",query="SELECT u FROM Usuario u WHERE u.login LIKE:login")
     ,
-    @NamedQuery(name = "buscarLogin", query = "SELECT u FROM Usuario u WHERE u.login LIKE:login")
+    @NamedQuery(name = "todoLosUsuarios", query = "SELECT u FROM Usuario u")
     ,
     @NamedQuery(name = "iniciarSesionConLoginYPassword", query = "SELECT u FROM Usuario u WHERE u.login LIKE:login and u.password LIKE:password")
     ,

@@ -15,6 +15,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -25,6 +27,14 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Aritz Arrieta
  */
+@NamedQueries({
+    @NamedQuery(name="findIncidenciaDeUnTrabajador",query="SELECT i FROM Incidencia i , Recoge r , Usuario u WHERE u.idUsuario LIKE:idUsuario AND r.idRecoge.trabajador_idUsuario = u.idUsuario AND r.incidencia.id = i.id"),
+                                                         //SELECT Distinct i.* FROM Incidencia i JOIN Recoge r JOIN Usuario u WHERE u.idUsuario = 4
+    @NamedQuery(name="findIncidenciaDeUnUsuario", query="SELECT i FROM Incidencia i WHERE cliente_idUsuario LIKE:idUsuario"),
+                                                        //SELECT incidencia.* FROM Incidencia  WHERE cliente_idUsuario = 2
+    @NamedQuery(name="findIncidenciaDeUnUsuarioAcabada",query="SELECT i FROM Incidencia i WHERE cliente_idUsuario LIKE:idUsuario AND i.estado='CERRADO'")
+})
+
 @Entity
 @Table(name = "incidencia", schema = "gesredb")
 @XmlRootElement
@@ -209,14 +219,7 @@ public class Incidencia implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 83 * hash + Objects.hashCode(this.id);
-        hash = 83 * hash + Objects.hashCode(this.estrellas);
-        hash = 83 * hash + Objects.hashCode(this.horas);
-        hash = 83 * hash + Objects.hashCode(this.precio);
-        hash = 83 * hash + Objects.hashCode(this.recoge);
-        hash = 83 * hash + Objects.hashCode(this.cliente);
-        hash = 83 * hash + Objects.hashCode(this.pieza);
-        hash = 83 * hash + Objects.hashCode(this.tipoIncidencia);
-        hash = 83 * hash + Objects.hashCode(this.estado);
+       
         return hash;
     }
 

@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Set;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -38,7 +39,7 @@ public class Cliente extends Usuario implements Serializable {
     /**
      * Relacion de incidencias
      */
-    @OneToMany(mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente",fetch= FetchType.EAGER)
     private Set<Incidencia> incidencias;
 
     /**
@@ -63,7 +64,7 @@ public class Cliente extends Usuario implements Serializable {
      *
      * @param incidencias Incidencias
      */
-    @XmlTransient
+   //@XmlTransient
     public void setIncidencias(Set<Incidencia> incidencias) {
         this.incidencias = incidencias;
     }
@@ -86,13 +87,13 @@ public class Cliente extends Usuario implements Serializable {
         this.fechaRegistro = fechaRegistro;
     }
 
-    @Override
+   /* @Override
     public int hashCode() {
         int hash = 7;
         hash = 59 * hash + Objects.hashCode(this.incidencias);
         hash = 59 * hash + Objects.hashCode(this.fechaRegistro);
         return hash;
-    }
+    }*/
 
     @Override
     public boolean equals(Object obj) {
