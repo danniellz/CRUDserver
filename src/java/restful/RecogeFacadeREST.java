@@ -24,7 +24,7 @@ import javax.ws.rs.core.PathSegment;
 
 /**
  *
- * @author JonY
+ * @author Jonathan Viñan y Aritz Arrieta
  */
 @Stateless
 @Path("entidades.recoge")
@@ -49,7 +49,7 @@ public class RecogeFacadeREST extends AbstractFacade<Recoge> {
         }
         java.util.List<String> incidenciaId = map.get("incidenciaId");
         if (incidenciaId != null && !incidenciaId.isEmpty()) {
-            key.setIncidenciaId(new java.lang.Integer(incidenciaId.get(0)));
+            key.setIncidencia_id(new java.lang.Integer(incidenciaId.get(0)));
         }
         return key;
     }

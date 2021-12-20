@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 /**
  * Clase que genera las key publica y privada
  *
- * @author Daniel Brizuela
+ * @author Daniel Brizuela, Aritz Arrieta
  */
 public class KeyGenerator {
 

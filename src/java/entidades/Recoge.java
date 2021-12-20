@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Aritz Arrieta
+ * @author Aritz Arrieta 
  */
 @Entity
 @Table(name = "recoge", schema = "gesredb")
@@ -34,6 +34,7 @@ public class Recoge implements Serializable {
 
     @EmbeddedId
     private RecogeId idRecoge;
+    
     @MapsId("idUsuario")
     @ManyToOne
     private Trabajador trabajador;
@@ -71,7 +72,7 @@ public class Recoge implements Serializable {
      *
      * @return incidencia
      */
-    @XmlTransient//Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con la incidencia
+  @XmlTransient//Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con la incidencia
     public Incidencia getIncidencia() {
         return incidencia;
     }
@@ -144,10 +145,7 @@ public class Recoge implements Serializable {
     public int hashCode() {
         int hash = 7;
         hash = 29 * hash + Objects.hashCode(this.idRecoge);
-        hash = 29 * hash + Objects.hashCode(this.trabajador);
-        hash = 29 * hash + Objects.hashCode(this.incidencia);
-        hash = 29 * hash + Objects.hashCode(this.horasEstimadas);
-        hash = 29 * hash + Objects.hashCode(this.fechaRecogida);
+       
         return hash;
     }
 
