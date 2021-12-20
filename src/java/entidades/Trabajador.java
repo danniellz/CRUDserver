@@ -14,7 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -26,6 +25,18 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Jonathan Viñan
  */
+//Coleccion de queries para realizar operaciones en la base de datos.
+@NamedQueries({
+    //Busca libros y sus atributos a partir del titulo
+    @NamedQuery(
+            name = "buscarTodosLosTrabajadores", query = "SELECT t FROM trabajador t "
+    )
+    ,
+    @NamedQuery(
+            name = "trabajadoresSinIncidenciasPorId", query = "SELECT t FROM trabajador t WHERE t.idUsuario  NOT IN (SELECT r.trabajador.idUsuario from Recoge r)" 
+    )
+})
+
 @Entity(name = "trabajador")
 @DiscriminatorValue("TRABAJADOR")
 @XmlRootElement
