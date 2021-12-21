@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import static javax.persistence.CascadeType.ALL;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -57,10 +58,10 @@ public class Trabajador extends Usuario implements Serializable {
      * Relacion 1:N con Piezas
      *
      */
-    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade=ALL)
     private Set<Pieza> piezas;
 
-    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade=ALL)
     private Set<Recoge> recoge;
 
     // @XmlTransient
@@ -167,7 +168,7 @@ public class Trabajador extends Usuario implements Serializable {
      */
     @Override
     public String toString() {
-        return "Trabajador{" + "precioHora=" + precioHora + ", fechaContrato=" + fechaContrato + ", piezas=" + piezas + ", recoge=" + recoge + '}';
+        return "Trabajador{" + "precioHora=" + precioHora + ", fechaContrato=" + fechaContrato + '}';
     }
 
 }

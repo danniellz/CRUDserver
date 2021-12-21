@@ -282,7 +282,7 @@ public class Incidencia implements Serializable {
      */
     @Override
     public String toString() {
-        return "Incidencia{" + "id=" + id + ", estrellas=" + estrellas + ", horas=" + horas + ", precio=" + precio + ", recoge=" + recoge + ", cliente=" + cliente + ", pieza=" + pieza + ", tipoIncidencia=" + tipoIncidencia + ", estado=" + estado + '}';
+        return "Incidencia{" + "id=" + id + ", estrellas=" + estrellas + ", horas=" + horas + ", precio=" + precio + ", tipoIncidencia=" + tipoIncidencia + ", estado=" + estado + '}';
     }
 
 }
