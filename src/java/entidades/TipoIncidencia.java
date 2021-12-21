@@ -1,6 +1,7 @@
 package entidades;
 
 /**
+ * Clase enumeracion que determina el tipo de incidencia
  *
  * @author Daniel Brizuela
  */

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entidades;
 
 import java.io.Serializable;
@@ -34,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
     )
     ,
     @NamedQuery(
-            name = "trabajadoresSinIncidenciasPorId", query = "SELECT t FROM trabajador t WHERE t.idUsuario  NOT IN (SELECT r.trabajador.idUsuario from Recoge r)" 
+            name = "trabajadoresSinIncidenciasPorId", query = "SELECT t FROM trabajador t WHERE t.idUsuario  NOT IN (SELECT r.trabajador.idUsuario from Recoge r)"
     )
 })
 
@@ -62,13 +57,13 @@ public class Trabajador extends Usuario implements Serializable {
      * Relacion 1:N con Piezas
      *
      */
-    @OneToMany(mappedBy = "trabajador",fetch= FetchType.EAGER)
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER)
     private Set<Pieza> piezas;
 
-    @OneToMany(mappedBy = "trabajador",fetch= FetchType.EAGER)
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER)
     private Set<Recoge> recoge;
 
-   // @XmlTransient
+    // @XmlTransient
     public Set<Recoge> getRecoge() {
         return recoge;
     }
@@ -131,21 +126,6 @@ public class Trabajador extends Usuario implements Serializable {
     public void setPiezas(Set<Pieza> piezas) {
         this.piezas = piezas;
     }
-
-    /**
-     * Método que compara el código hash de dos objetos.
-     *
-     * @return el código hash del objeto.
-     */
-   /* @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 53 * hash + Objects.hashCode(this.precioHora);
-        hash = 53 * hash + Objects.hashCode(this.fechaContrato);
-        hash = 53 * hash + Objects.hashCode(this.piezas);
-        hash = 53 * hash + Objects.hashCode(this.recoge);
-        return hash;
-    }*/
 
     /**
      * Método que compara si un objeto es igual al objeto "Trabajador".

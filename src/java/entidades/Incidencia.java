@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entidades;
 
 import java.io.Serializable;
@@ -11,6 +6,7 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,11 +24,13 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author Aritz Arrieta
  */
 @NamedQueries({
-    @NamedQuery(name="findIncidenciaDeUnTrabajador",query="SELECT i FROM Incidencia i , Recoge r , Usuario u WHERE u.idUsuario LIKE:idUsuario AND r.idRecoge.trabajador_idUsuario = u.idUsuario AND r.incidencia.id = i.id"),
+    @NamedQuery(name = "findIncidenciaDeUnTrabajador", query = "SELECT i FROM Incidencia i , Recoge r , Usuario u WHERE u.idUsuario LIKE:idUsuario AND r.idRecoge.trabajador_idUsuario = u.idUsuario AND r.incidencia.id = i.id")
+    ,
                                                          //SELECT Distinct i.* FROM Incidencia i JOIN Recoge r JOIN Usuario u WHERE u.idUsuario = 4
-    @NamedQuery(name="findIncidenciaDeUnUsuario", query="SELECT i FROM Incidencia i WHERE cliente_idUsuario LIKE:idUsuario"),
+    @NamedQuery(name = "findIncidenciaDeUnUsuario", query = "SELECT i FROM Incidencia i WHERE cliente_idUsuario LIKE:idUsuario")
+    ,
                                                         //SELECT incidencia.* FROM Incidencia  WHERE cliente_idUsuario = 2
-    @NamedQuery(name="findIncidenciaDeUnUsuarioAcabada",query="SELECT i FROM Incidencia i WHERE cliente_idUsuario LIKE:idUsuario AND i.estado='CERRADO'")
+    @NamedQuery(name = "findIncidenciaDeUnUsuarioAcabada", query = "SELECT i FROM Incidencia i WHERE cliente_idUsuario LIKE:idUsuario AND i.estado='CERRADO'")
 })
 
 @Entity
@@ -63,13 +61,13 @@ public class Incidencia implements Serializable {
      */
     private Double precio;
 
-    @OneToMany(mappedBy = "incidencia")
+    @OneToMany(mappedBy = "incidencia", fetch = FetchType.EAGER)
     private Set<Recoge> recoge;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Cliente cliente;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Pieza pieza;
     /**
      * enumeracion del Tipo de las Incidencias
@@ -85,7 +83,7 @@ public class Incidencia implements Serializable {
     @Enumerated(EnumType.STRING)
     private EstadoIncidencia estado;
 
-   @XmlTransient//Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con el cliente
+    @XmlTransient//Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con el cliente
     public Cliente getCliente() {
         return cliente;
     }
@@ -215,14 +213,25 @@ public class Incidencia implements Serializable {
         this.id = id;
     }
 
+    /**
+     * Hashcode
+     * 
+     * @return devuelve el hashcode
+     */
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 83 * hash + Objects.hashCode(this.id);
-       
+
         return hash;
     }
 
+    /**
+     * Metodo equals para comparar si dos objetos son iguales
+     *
+     * @param obj el otro objeto a comparar
+     * @return devuelve un booleano si son o no iguales
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -265,6 +274,11 @@ public class Incidencia implements Serializable {
         return true;
     }
 
+    /**
+     * Metodo para obtener la informacion de Incidencia
+     *
+     * @return devuelve una representacion en forma de texto de Incidencia
+     */
     @Override
     public String toString() {
         return "Incidencia{" + "id=" + id + ", estrellas=" + estrellas + ", horas=" + horas + ", precio=" + precio + ", recoge=" + recoge + ", cliente=" + cliente + ", pieza=" + pieza + ", tipoIncidencia=" + tipoIncidencia + ", estado=" + estado + '}';
