@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -58,12 +59,12 @@ public class Pieza implements Serializable {
     /**
      * Relacion ManyToOne con trabajador
      */
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     private Trabajador trabajador;
     /**
      * Relacion OneToMany con incidencias
      */
-    @OneToMany(mappedBy = "pieza")
+    @OneToMany(mappedBy = "pieza", fetch=FetchType.EAGER)
     private Set<Incidencia> incidencias;
 
     //GETTERS y SETTERS
@@ -72,7 +73,7 @@ public class Pieza implements Serializable {
      *
      * @return devuelve el trabajador
      */
-    //@XmlTransient//Si se quita la anotacion aparence toda la informcaion relacionada con el trabajador
+    @XmlTransient//Si se quita la anotacion aparence toda la informcaion relacionada con el trabajador
     public Trabajador getTrabajador() {
         return trabajador;
     }
@@ -194,7 +195,7 @@ public class Pieza implements Serializable {
      * Metodo equals para comparar si dos objetos son iguales
      *
      * @param obj el otro objeto a comparar
-     * @return devuelve true si los Id son iguales
+     * @return devuelve un booleano si son o no iguales
      */
     @Override
     public boolean equals(Object obj) {
@@ -236,7 +237,8 @@ public class Pieza implements Serializable {
      */
     @Override
     public String toString() {
-        return "Pieza{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", stock=" + stock + ", trabajador=" + trabajador + ", incidencias=" + incidencias + '}';
+        return "Pieza{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", stock=" + stock + '}';
     }
+    
 
 }

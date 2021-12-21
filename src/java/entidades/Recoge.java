@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entidades;
 
 import java.io.Serializable;
@@ -11,6 +6,7 @@ import java.util.Date;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
@@ -21,8 +17,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- *
- * @author Aritz Arrieta 
+ * Clase que almacena el trabajador y la incidencia que ha escogido
+ * 
+ * @author Aritz Arrieta
  */
 @Entity
 @Table(name = "recoge", schema = "gesredb")
@@ -34,12 +31,12 @@ public class Recoge implements Serializable {
 
     @EmbeddedId
     private RecogeId idRecoge;
-    
+
     @MapsId("idUsuario")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Trabajador trabajador;
     @MapsId("incidenciaId")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     private Incidencia incidencia;
 
     @NotNull
@@ -72,7 +69,7 @@ public class Recoge implements Serializable {
      *
      * @return incidencia
      */
-  @XmlTransient//Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con la incidencia
+    @XmlTransient//Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con la incidencia
     public Incidencia getIncidencia() {
         return incidencia;
     }
@@ -141,14 +138,25 @@ public class Recoge implements Serializable {
         this.fechaRecogida = fechaRecogida;
     }
 
+    /**
+     * Hashcode
+     * 
+     * @return devuelve el hashcode
+     */
     @Override
     public int hashCode() {
         int hash = 7;
         hash = 29 * hash + Objects.hashCode(this.idRecoge);
-       
+
         return hash;
     }
 
+    /**
+     * Metodo equals para comparar si dos objetos son iguales
+     *
+     * @param obj el otro objeto a comparar
+     * @return devuelve un booleano si son o no iguales
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -179,6 +187,11 @@ public class Recoge implements Serializable {
         return true;
     }
 
+    /**
+     * Metodo para obtener la informacion de Recoge
+     *
+     * @return devuelve una representacion en forma de texto de Recoge
+     */
     @Override
     public String toString() {
         return "Recoge{" + "idRecoge=" + idRecoge + ", trabajador=" + trabajador + ", incidencia=" + incidencia + ", horasEstimadas=" + horasEstimadas + ", fechaRecogida=" + fechaRecogida + '}';

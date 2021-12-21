@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entidades;
 
 import java.io.Serializable;
@@ -33,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Jonathan Viañan y Aritz Arrieta
  */
 @NamedQueries({
-    @NamedQuery(name="BuscarUser",query="SELECT u FROM Usuario u WHERE u.login LIKE:login")
+    @NamedQuery(name = "buscarUser", query = "SELECT u FROM Usuario u WHERE u.login LIKE:login")
     ,
     @NamedQuery(name = "todoLosUsuarios", query = "SELECT u FROM Usuario u")
     ,
@@ -246,6 +241,11 @@ public class Usuario implements Serializable {
         this.lastPasswordChange = lastPasswordChange;
     }
 
+    /**
+     * Hashcode
+     *
+     * @return devuelve el hashcode
+     */
     @Override
     public int hashCode() {
         int hash = 7;
@@ -260,6 +260,12 @@ public class Usuario implements Serializable {
         return hash;
     }
 
+    /**
+     * Metodo para comprobar si dos clases son iguales
+     *
+     * @param obj objeto a comparar
+     * @return devuelve un booleano si son o no iguales
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -297,6 +303,16 @@ public class Usuario implements Serializable {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Metodo para obtener la informacion de Usuario
+     *
+     * @return devuelve una representacion en forma de texto de Usuario
+     */
+    @Override
+    public String toString() {
+        return "Usuario{" + "idUsuario=" + idUsuario + ", login=" + login + ", email=" + email + ", fullName=" + fullName + ", status=" + status + ", privilege=" + privilege + ", password=" + password + ", lastPasswordChange=" + lastPasswordChange + '}';
     }
 
 }

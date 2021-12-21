@@ -87,14 +87,12 @@ public class Cliente extends Usuario implements Serializable {
         this.fechaRegistro = fechaRegistro;
     }
 
-   /* @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + Objects.hashCode(this.incidencias);
-        hash = 59 * hash + Objects.hashCode(this.fechaRegistro);
-        return hash;
-    }*/
-
+    /**
+     * Metodo equals para comparar si dos objetos son iguales
+     *
+     * @param obj el otro objeto a comparar
+     * @return devuelve un booleano si son o no iguales
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -113,6 +111,11 @@ public class Cliente extends Usuario implements Serializable {
         return Objects.equals(this.fechaRegistro, other.fechaRegistro);
     }
 
+    /**
+     * Metodo para obtener la informacion de Cliente
+     *
+     * @return devuelve una representacion en forma de texto de Cliente
+     */
     @Override
     public String toString() {
         return "Cliente{" + "incidencias=" + incidencias + ", fechaRegistro=" + fechaRegistro + '}';
