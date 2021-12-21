@@ -20,7 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- *
+ * Entidad Incidencia
+ * 
  * @author Aritz Arrieta
  */
 @NamedQueries({
