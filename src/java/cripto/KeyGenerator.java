@@ -30,7 +30,7 @@ public class KeyGenerator {
         try {
             //KeyPairGenerator puede generar las 2 claves para cifrar a la vez.
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
+            keyPairGenerator.initialize(1024);
             //Se guardan las claves generadas
             KeyPair keyPair = keyPairGenerator.genKeyPair();
 
@@ -53,7 +53,7 @@ public class KeyGenerator {
             //Key privada
             //Ruta de guardado de la clave
             LOG.info("GESREserver/KeyGenerator: Guardando PrivateKey...");
-            String privateKeyFilename = rutaAbsoluta+RB.getString("PRIVATE_KEY");;
+            String privateKeyFilename = rutaAbsoluta+RB.getString("PRIVATE_KEY");
             //Contenido que va a ir dentro del archivo
             byte[] privateKeyBytes = keyPair.getPrivate().getEncoded();
             fos = new FileOutputStream(privateKeyFilename);

@@ -32,10 +32,17 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     @PersistenceContext(unitName = "GESREServerPU")
     private EntityManager em;
 
+    /**
+     * Restfull de la Entidad de Incidencia, con CRUD completo
+     */
     public IncidenciaFacadeREST() {
         super(Incidencia.class);
     }
 
+    /**
+     * 
+     * @param entity
+     */
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML})
@@ -43,6 +50,11 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
         super.create(entity);
     }
 
+    /**
+     *
+     * @param id
+     * @param entity
+     */
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
@@ -50,12 +62,21 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
         super.edit(entity);
     }
 
+    /**
+     *
+     * @param id
+     */
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
         super.remove(super.find(id));
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
@@ -63,6 +84,13 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
         return super.find(id);
     }
     //findIncidenciaDeUnTrabajador
+
+    /**
+     *
+     * @param idUsuario
+     * @return
+     * @throws InternalServerErrorException
+     */
     @GET
     @Path("/InciTrabajador/{idUsuario}")
     @Produces({MediaType.APPLICATION_XML})
@@ -83,6 +111,13 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     }
 
      //findIncidenciaDeUnUsuario
+
+    /**
+     *
+     * @param idUsuario
+     * @return
+     * @throws InternalServerErrorException
+     */
     @GET
     @Path("/InciUsuario/{idUsuario}")
     @Produces({MediaType.APPLICATION_XML})
@@ -102,6 +137,13 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     
     }
     //findIncidenciaDeUnUsuarioCerrada
+
+    /**
+     *
+     * @param idUsuario
+     * @return
+     * @throws InternalServerErrorException
+     */
       @GET
     @Path("/InciAcabadaUsuario/{idUsuario}")
     @Produces({MediaType.APPLICATION_XML})
@@ -121,6 +163,10 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     
     }
     
+    /**
+     *
+     * @return
+     */
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
@@ -128,8 +174,10 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
         return super.findAll();
     }
    
-    
-   
+    /**
+     *
+     * @return
+     */
     @Override
     protected EntityManager getEntityManager() {
         return em;

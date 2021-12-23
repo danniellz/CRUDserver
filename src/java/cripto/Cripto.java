@@ -29,20 +29,20 @@ public class Cripto {
      * @param contra contraseña
      * @throws Exception
      */
-    public String cifrar(String contra) throws Exception {
+    public byte[] cifrar(String contra) throws Exception {
         LOG.info("GESREserver/Cripto: Cifrando contraseña...");
         //Modo de cifrado, Crea una instancia del objeto Cipher como un cifrado RSA con el modo de operación ECB y el esquema de relleno
-        cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
+        cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         //Keys a utilizar
         RSAPublicKey pubKey = (RSAPublicKey) PublicKeyReader.get();
-        RSAPrivateKey privKey = (RSAPrivateKey) PrivateKeyReader.get();
+       // RSAPrivateKey privKey = (RSAPrivateKey) PrivateKeyReader.get();
         //Iniciar Cipher en modo Encriptacion con clave publica
         cipher.init(Cipher.ENCRYPT_MODE, pubKey);
         //Cifrar
-        cipherText = cipher.doFinal(contra.getBytes());
+       byte[] cipherText = cipher.doFinal(contra.getBytes());
         // Mostrar Cifrado
-        System.out.println("Contraseña Cifrada: " + new String(cipherText));
-        return byteToHexadecimal(cipherText);
+        System.out.println("Contraseña Cifrada: " +new String(cipherText));
+        return  cipherText;
 
     }
 
@@ -53,17 +53,19 @@ public class Cripto {
      * @throws Exception
      * @return 
      */
-    public String descifrar(String contraHex) throws Exception {
-        LOG.info("GESREserver/Cripto: Descifrando contraseña...");
-        cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
-
+    public byte[] descifrar(byte[] contra) throws Exception {
+        LOG.info("GESREserver/Cripto: CLASE CRIPTO ***** Descifrando contraseña...");
+        cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+       
         RSAPrivateKey privKey = (RSAPrivateKey) PrivateKeyReader.get();
-
+        LOG.info("USO esto **************KEY");
         // Iniciar descifrado con la clave privada 
         cipher.init(Cipher.DECRYPT_MODE, privKey);
-        byte[] contraDescifrada = cipher.doFinal(HexadecimalToByte(contraHex));
+            LOG.info("Desencripto?????????????????????????????????????");
+        byte[] contraDescifrada = cipher.doFinal(contra);
+         
         System.out.println("Contraseña Descifrada: " + new String(contraDescifrada));
-        return new String(contraDescifrada);
+        return contraDescifrada;
     }
     
     /**
@@ -72,6 +74,7 @@ public class Cripto {
      * @param bytes Array de bytes
      * @return devuelve un String hexadecimal
      */
+    /*
     private String byteToHexadecimal(byte[] bytes) {
         LOG.info("CifradoAsimetrico: Convirtiendo bytes a hexadecimal");
 
@@ -92,7 +95,7 @@ public class Cripto {
      * @param hexadecimal string hexadecimal
      * @return devuelve un array de bytes
      */
-    private byte[] HexadecimalToByte(String hexadecimal) {
+   /* private byte[] HexadecimalToByte(String hexadecimal) {
         LOG.info("CifradoAsimetrico: Convirtiendo hexadecimal a bytes");
         int length = hexadecimal.length();
         byte[] data = new byte[length / 2];
@@ -101,5 +104,5 @@ public class Cripto {
                     + Character.digit(hexadecimal.charAt(i + 1), 16));
         }
         return data;
-    }
+    }*/
 }

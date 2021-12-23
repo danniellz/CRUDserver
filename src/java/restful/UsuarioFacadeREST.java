@@ -11,6 +11,8 @@ import entidades.Usuario;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,10 +31,12 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Jonathan Viñan y Aritz Arrieta
  */
+
 @Stateless
 @Path("entidades.usuario")
 public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
-
+ private static final Logger LOG = Logger.getLogger(Cripto.class.getName());
+ 
     @PersistenceContext(unitName = "GESREServerPU")
     private EntityManager em;
 
@@ -103,7 +107,8 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
                 int int_random = rand.nextInt(99999999 - 00000000) + 99999999;
                 String nuevaContra = String.valueOf(int_random);
                 System.out.println(nuevaContra);
-                String contra = cifradoHash(nuevaContra);
+               String contra = hasheado(nuevaContra);
+               
                 
                 usuarios.setPassword(contra);
                 if (!em.contains(usuarios)) {
@@ -129,9 +134,17 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     public Usuario buscarUsuarioPorLoginYContrasenia(@PathParam("login") String login, @PathParam("password") String password) {
         Usuario usuario;
         try {
-            password = descifrado(password);
-            password = cifradoHash(password);
-            usuario = (Usuario) em.createNamedQuery("iniciarSesionConLoginYPassword").setParameter("login", login).setParameter("password", password).getSingleResult();
+           // password = descifrado(password);
+           byte[] contracifrada= cifrado(password);
+          LOG.info("*******************************************************Contraseña Cifrada: "+new String(contracifrada));
+           byte[] contraDescifra = descifrado(contracifrada);
+           LOG.info("*****************************************************contraseña descifrada: "+ password);
+           String contra =  hasheado(new String(contraDescifra));
+           LOG.info("*****************************************************contraseña Hasheada: "+ contra);
+            
+            
+            usuario = (Usuario) em.createNamedQuery("iniciarSesionConLoginYPassword").setParameter("login", login).setParameter("password", contra).getSingleResult();
+       
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
         }
@@ -172,12 +185,12 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
 
     }
 
-    @GET
+    /*@GET
     @Path("cambiarContraseniaPorEmail/{correo},{password}")
     @Produces({MediaType.APPLICATION_XML})
     public void cambiarContraseniaPoreEmail(@PathParam("correo") String email, @PathParam("password") String password) {
         Usuario u = null;
-        Usuario x = null;
+      
         try {
             u = buscarEmail(email);
             if (u.getLogin().isEmpty()) {
@@ -191,7 +204,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
             throw new InternalServerErrorException(e.getMessage());
         }
 
-    }
+    }*/
 
     public void actualizar(Usuario usuario) {
         try {
@@ -205,15 +218,31 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
         }
     }
     
-    private String cifradoHash(String contra){
-        Hash hash = new Hash();
-        return hash.cifrarTextoEnHash(contra);
+    private byte[] cifrado(String contra){
+         Cripto cripto = new Cripto();
+         byte[] contraCifrada = null;
+        try {
+           contraCifrada= cripto.cifrar(contra);
+        } catch (Exception ex) {
+            Logger.getLogger(UsuarioFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+     return contraCifrada;
         
     }
     
-    private String descifrado(String contra) throws Exception{
+    private byte[] descifrado(byte[] contra) throws Exception{
         Cripto cripto = new Cripto();
-        return cripto.descifrar(contra);
+        byte[] contraDescifrada= null;
+         contraDescifrada=cripto.descifrar(contra);
+         
+         return contraDescifrada;
     } 
+    
+    private String hasheado(String contra) throws Exception{
+    Hash hasheado = new Hash();
+     String cifrarTextoEnHash = hasheado.cifrarTextoEnHash(contra);
+  
+    return cifrarTextoEnHash;
+    }
 
 }
