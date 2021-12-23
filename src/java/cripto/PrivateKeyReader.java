@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 /**
@@ -19,6 +20,8 @@ public class PrivateKeyReader {
      * LOGGER
      */
     private static final Logger LOG = Logger.getLogger(PrivateKeyReader.class.getName());
+    private static final String rutaAbsoluta = new File("").getAbsolutePath();
+    private static final ResourceBundle RB = ResourceBundle.getBundle("archivos.rutas");
 
     /**
      * lee la clave privada (igual a leer un fichero) solo que se utiliza
@@ -31,9 +34,10 @@ public class PrivateKeyReader {
      * @return devuelve la Key
      * @throws Exception suelta una exception si algo sale mal
      */
-    public static PrivateKey get(String filename) throws Exception {
+    public static PrivateKey get() throws Exception {
         LOG.info("GESREserver/PrivateKeyReader: Leyendo Clave Privada...");
-        File file = new File(filename);
+        System.out.println(rutaAbsoluta);
+        File file = new File(RB.getString("PRIVATE_KEY"));
         FileInputStream fis = new FileInputStream(file);
         DataInputStream dis = new DataInputStream(fis);
         byte[] keyBytes = new byte[(int) file.length()];
