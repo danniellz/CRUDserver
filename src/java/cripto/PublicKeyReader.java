@@ -21,7 +21,7 @@ public class PublicKeyReader {
      */
     private static final Logger LOG = Logger.getLogger(PublicKeyReader.class.getName());
     private static final String rutaAbsoluta = new File("").getAbsolutePath();
-    private static final ResourceBundle RB = ResourceBundle.getBundle("archivos.Paths");
+    private static final ResourceBundle RB = ResourceBundle.getBundle("archivos.rutas");
 
     /**
      * Lee la clave publica ( igual que leer un fichero) solo que se utiliza la
