@@ -29,12 +29,13 @@ public class EnvioEmail {
     public static final String emisor = "gesre.enterprise@gmail.com";
 
     /**
+     * Metodo para enviar email con el reset y cambio de contraseña
      * 
-     * @param receptor
-     * @param asunto
-     * @param newPaasword
-     * @throws AddressException
-     * @throws MessagingException 
+     * @param receptor Direccion de correo que recive el correo
+     * @param asunto Asunto del correo
+     * @param cuerpo Cuerpo del mennsaje 
+     * @throws AddressException Excepcion de la direccion de correo
+     * @throws Messaging Exception Excepcion en el mensaje
      */
     public static void enviarMail (String receptor, String asunto, String cuerpo) throws AddressException, MessagingException {
         //Propiedades del Mail
