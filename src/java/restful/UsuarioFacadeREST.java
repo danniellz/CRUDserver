@@ -5,6 +5,7 @@
  */
 package restful;
 
+import email.EnvioEmail;
 import entidades.Usuario;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -78,7 +79,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     public Usuario findUserByLogin(@PathParam("login") String login) {
         Usuario usuarios = null;
         try {
-            usuarios = (Usuario) em.createNamedQuery("BuscarUser")
+            usuarios = (Usuario) em.createNamedQuery("buscarUser")
                     .setParameter("login", login)
                     .getSingleResult();
 
@@ -115,6 +116,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
                     em.merge(usuarios);
                 }
                 em.flush();
+                EnvioEmail.enviarMail(usuarios.getEmail(), "Reset de Contraseña", newPassword);
             }
 
         } catch (Exception e) {
@@ -162,6 +164,8 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     public void cambiarContraseniaPorLogin(@PathParam("login") String login, @PathParam("password") String password) {
         Usuario u = null;
         Usuario x = null;
+        String asunto = "Contraseña Actualizada";
+        String cuerpo = "Contraseña actualizada correctamente.";
         try {
             u = findUserByLogin(login);
             if (u.getLogin().isEmpty()) {
@@ -170,6 +174,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
                 u.setPassword(password);
                 actualizar(u);
             }
+            EnvioEmail.enviarMail(u.getEmail(), asunto, cuerpo);
 
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
