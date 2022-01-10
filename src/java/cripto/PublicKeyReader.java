@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.security.KeyFactory;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 /**
@@ -19,6 +20,8 @@ public class PublicKeyReader {
      * LOGGER
      */
     private static final Logger LOG = Logger.getLogger(PublicKeyReader.class.getName());
+    private static final String rutaAbsoluta = new File("").getAbsolutePath();
+    private static final ResourceBundle RB = ResourceBundle.getBundle("archivos.rutas");
 
     /**
      * Lee la clave publica ( igual que leer un fichero) solo que se utiliza la
@@ -31,9 +34,10 @@ public class PublicKeyReader {
      * @return devuelve la Key
      * @throws Exception
      */
-    public static PublicKey get(String filename) throws Exception {
+    public static PublicKey get() throws Exception {
         LOG.info("GESREserver/PublicKeyReader: Leyendo Clave Pública...");
-        File file = new File(filename);
+        System.out.println(rutaAbsoluta);
+        File file = new File(RB.getString("PUBLIC_KEY"));
         FileInputStream fis = new FileInputStream(file);
         DataInputStream dis = new DataInputStream(fis);
         byte[] keyBytes = new byte[(int) file.length()];

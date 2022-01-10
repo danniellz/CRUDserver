@@ -1,11 +1,13 @@
 package cripto;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,8 +22,10 @@ public class KeyGenerator {
      * LOGGER
      */
     private static final Logger LOG = Logger.getLogger(KeyGenerator.class.getName());
+    private static final String rutaAbsoluta = new File("").getAbsolutePath();
+    private static final ResourceBundle RB = ResourceBundle.getBundle("archivos.rutas");
 
-    public void keyGen() {
+    public static void main(String[] args) {
         LOG.info("GESREserver/KeyGenerator: Generando claves...");
         try {
             //KeyPairGenerator puede generar las 2 claves para cifrar a la vez.
@@ -39,7 +43,7 @@ public class KeyGenerator {
              */
             //Ruta de guardado de la clave
             LOG.info("GESREserver/KeyGenerator: Guardando PublicKey...");
-            String publicKeyFilename = "./publicKeyFile.key";
+            String publicKeyFilename = rutaAbsoluta+RB.getString("PUBLIC_KEY");
             //Contenido que va a ir dentro del archivo
             byte[] publicKeyBytes = keyPair.getPublic().getEncoded();
             FileOutputStream fos = new FileOutputStream(publicKeyFilename);
@@ -49,7 +53,7 @@ public class KeyGenerator {
             //Key privada
             //Ruta de guardado de la clave
             LOG.info("GESREserver/KeyGenerator: Guardando PrivateKey...");
-            String privateKeyFilename = "./privateKeyFile.key";
+            String privateKeyFilename = rutaAbsoluta+RB.getString("PRIVATE_KEY");;
             //Contenido que va a ir dentro del archivo
             byte[] privateKeyBytes = keyPair.getPrivate().getEncoded();
             fos = new FileOutputStream(privateKeyFilename);

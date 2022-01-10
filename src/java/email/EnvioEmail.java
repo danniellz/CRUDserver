@@ -1,4 +1,6 @@
+
 package email;
+
 
 import java.util.Properties;
 import javax.mail.Authenticator;
@@ -18,7 +20,7 @@ import javax.mail.internet.MimeMultipart;
  * Clase para enviar un mail
  *
  * @author Daniel Brizuela, Mikel Matilla
- */
+
 public class EnvioEmail {
 
     //Puerto y Host
@@ -27,6 +29,7 @@ public class EnvioEmail {
     //Autenticacion y correo
     public static final String pass = "abcd*1234";
     public static final String emisor = "gesre.enterprise@gmail.com";
+
 
     /**
      * Metodo para enviar email con el reset y cambio de contraseña
@@ -38,6 +41,7 @@ public class EnvioEmail {
      * @throws Messaging Exception Excepcion en el mensaje
      */
     public static void enviarMail (String receptor, String asunto, String cuerpo) throws AddressException, MessagingException {
+
         //Propiedades del Mail
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", true);
@@ -60,14 +64,18 @@ public class EnvioEmail {
         Message msg = new MimeMessage(session);
         msg.setFrom(new InternetAddress(emisor));
         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(receptor));
+
         msg.setSubject(asunto);
+
         
         //Cuerpo del mensaje
         Multipart multipart = new MimeMultipart();
         
         //Mensaje (tambien puede ser un archivo)
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
+
         mimeBodyPart.setContent(cuerpo, "text/html");
+
         multipart.addBodyPart(mimeBodyPart);
         
         //Agregar las partes al MIME message

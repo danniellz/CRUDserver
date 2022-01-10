@@ -5,6 +5,7 @@
  */
 package restful;
 
+
 import email.EnvioEmail;
 import entidades.Usuario;
 import java.nio.charset.Charset;
@@ -74,44 +75,42 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     }
 
     @GET
-    @Path("/buscarUsuario/{login}")
+    @Path("login/{login}")
     @Produces({MediaType.APPLICATION_XML})
     public Usuario findUserByLogin(@PathParam("login") String login) {
         Usuario usuarios = null;
         try {
+
             usuarios = (Usuario) em.createNamedQuery("buscarUser")
                     .setParameter("login", login)
                     .getSingleResult();
 
+
         } catch (Exception e) {
-
             throw new InternalServerErrorException(e);
-
         }
         return usuarios;
     }
 
-   @GET
-    @Path("/resetPassword/{login}")
+    @GET
+    @Path("nuevaContrasenia/{login}")
     @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByLogin(@PathParam("login") String login) {
         Usuario usuarios = null;
         try {
             usuarios = findUserByLogin(login);
             if (usuarios.getLogin().isEmpty()) {
-             
-            } else {
-                //RESET PASSWORD
 
+            } else {
                 //generar nueva contraseña
                 Random rand = new Random(); //instance of random class
 
-               
                 int int_random = rand.nextInt(99999999 - 00000000) + 99999999;
-                String newPassword = null;
-                newPassword = String.valueOf(int_random);
-                // int_random= Integer.parseInt(newPassword);
-                usuarios.setPassword(newPassword);
+                String nuevaContra = String.valueOf(int_random);
+                System.out.println(nuevaContra);
+                String contra = cifradoHash(nuevaContra);
+                
+                usuarios.setPassword(contra);
                 if (!em.contains(usuarios)) {
                     em.merge(usuarios);
                 }
@@ -131,11 +130,13 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     }
 
     @GET
-    @Path("/iniciarSesionUsuario/{login},{password}")
+    @Path("iniciarSesion/{login},{password}")
     @Produces({MediaType.APPLICATION_XML})
     public Usuario buscarUsuarioPorLoginYContrasenia(@PathParam("login") String login, @PathParam("password") String password) {
         Usuario usuario;
         try {
+            password = descifrado(password);
+            password = cifradoHash(password);
             usuario = (Usuario) em.createNamedQuery("iniciarSesionConLoginYPassword").setParameter("login", login).setParameter("password", password).getSingleResult();
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
@@ -143,10 +144,8 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
         return usuario;
     }
 
-  
-
-   @GET
-    @Path("/buscarUsuarioPorEmail/{correo}")
+    @GET
+    @Path("buscarUsuarioPorEmail/{correo}")
     @Produces({MediaType.APPLICATION_XML})
     public Usuario buscarEmail(@PathParam("correo") String email) {
         Usuario u;
@@ -159,7 +158,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     }
 
     @GET
-    @Path("cambiarContraseniaPorLogin/{login},{password}")
+    @Path("cambiarContrasenia/{login},{password}")
     @Produces({MediaType.APPLICATION_XML})
     public void cambiarContraseniaPorLogin(@PathParam("login") String login, @PathParam("password") String password) {
         Usuario u = null;
@@ -214,5 +213,16 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
             throw new InternalServerErrorException(e.getMessage());
         }
     }
+    
+    private String cifradoHash(String contra){
+        Hash hash = new Hash();
+        return hash.cifrarTextoEnHash(contra);
+        
+    }
+    
+    private String descifrado(String contra) throws Exception{
+        Cripto cripto = new Cripto();
+        return cripto.descifrar(contra);
+    } 
 
 }
