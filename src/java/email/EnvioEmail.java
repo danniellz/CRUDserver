@@ -1,4 +1,6 @@
-package envioemail;
+
+package email;
+
 
 import java.util.Properties;
 import javax.mail.Authenticator;
@@ -17,8 +19,8 @@ import javax.mail.internet.MimeMultipart;
 /**
  * Clase para enviar un mail
  *
- * @author Daniel Brizuela
- */
+ * @author Daniel Brizuela, Mikel Matilla
+
 public class EnvioEmail {
 
     //Puerto y Host
@@ -27,21 +29,19 @@ public class EnvioEmail {
     //Autenticacion y correo
     public static final String pass = "abcd*1234";
     public static final String emisor = "gesre.enterprise@gmail.com";
-    //Quien recibe el mensaje
-    public static final String receptor = "gesre.enterprise@gmail.com";
-    //Asunto
-    public static final String subject = "Prueba";
-    //Mensaje
-    public static final String text = "hola, envio este mensaje de prueba";
+
 
     /**
-     * Main
+     * Metodo para enviar email con el reset y cambio de contraseña
      * 
-     * @param args
-     * @throws AddressException
-     * @throws MessagingException 
+     * @param receptor Direccion de correo que recive el correo
+     * @param asunto Asunto del correo
+     * @param cuerpo Cuerpo del mennsaje 
+     * @throws AddressException Excepcion de la direccion de correo
+     * @throws Messaging Exception Excepcion en el mensaje
      */
-    public static void main(String[] args) throws AddressException, MessagingException {
+    public static void enviarMail (String receptor, String asunto, String cuerpo) throws AddressException, MessagingException {
+
         //Propiedades del Mail
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", true);
@@ -64,14 +64,18 @@ public class EnvioEmail {
         Message msg = new MimeMessage(session);
         msg.setFrom(new InternetAddress(emisor));
         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(receptor));
-        msg.setSubject(subject);
+
+        msg.setSubject(asunto);
+
         
         //Cuerpo del mensaje
         Multipart multipart = new MimeMultipart();
         
         //Mensaje (tambien puede ser un archivo)
         MimeBodyPart mimeBodyPart = new MimeBodyPart();
-        mimeBodyPart.setContent(text, "text/html");
+
+        mimeBodyPart.setContent(cuerpo, "text/html");
+
         multipart.addBodyPart(mimeBodyPart);
         
         //Agregar las partes al MIME message
