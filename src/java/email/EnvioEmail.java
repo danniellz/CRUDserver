@@ -3,6 +3,7 @@ package email;
 
 
 import java.util.Properties;
+import java.util.ResourceBundle;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -20,16 +21,11 @@ import javax.mail.internet.MimeMultipart;
  * Clase para enviar un mail
  *
  * @author Daniel Brizuela, Mikel Matilla
+ */
 
 public class EnvioEmail {
-
-    //Puerto y Host
-    public static final int smtp_port = 25;
-    public static final String smtp_host = "smtp.gmail.com";
-    //Autenticacion y correo
-    public static final String pass = "abcd*1234";
-    public static final String emisor = "gesre.enterprise@gmail.com";
-
+    
+    private static final ResourceBundle RB = ResourceBundle.getBundle("archivos.email");
 
     /**
      * Metodo para enviar email con el reset y cambio de contraseña
@@ -46,9 +42,9 @@ public class EnvioEmail {
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", true);
         properties.put("mail.smtp.starttls.enable", "true");
-        properties.put("mail.smtp.host", smtp_host);
-        properties.put("mail.smtp.port", smtp_port);
-        properties.put("mail.smtp.ssl.trust", smtp_host);
+        properties.put("mail.smtp.host", RB.getString("HOST"));
+        properties.put("mail.smtp.port", RB.getString("PORT"));
+        properties.put("mail.smtp.ssl.trust", RB.getString("HOST"));
         properties.put("mail.smtp.ssl.enable", "false");
         properties.put("mail.imap.partialfetch", false);
 
@@ -56,13 +52,13 @@ public class EnvioEmail {
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(emisor, pass);
+                return new PasswordAuthentication(RB.getString("EMAIL"), RB.getString("PASSWORD"));
             }
         });
         
         //Preparar mensaje
         Message msg = new MimeMessage(session);
-        msg.setFrom(new InternetAddress(emisor));
+        msg.setFrom(new InternetAddress(RB.getString("EMAIL")));
         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(receptor));
 
         msg.setSubject(asunto);

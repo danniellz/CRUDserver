@@ -6,9 +6,10 @@
 package restful;
 
 
+import cripto.Cripto;
+import cripto.Hash;
 import email.EnvioEmail;
 import entidades.Usuario;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Random;
 import javax.ejb.Stateless;
@@ -115,7 +116,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
                     em.merge(usuarios);
                 }
                 em.flush();
-                EnvioEmail.enviarMail(usuarios.getEmail(), "Reset de Contraseña", newPassword);
+                EnvioEmail.enviarMail(usuarios.getEmail(), "Reset de Contraseña", nuevaContra);
             }
 
         } catch (Exception e) {
