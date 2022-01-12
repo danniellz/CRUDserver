@@ -46,20 +46,22 @@ import javax.crypto.spec.SecretKeySpec;
 public class CifradoEmail{
 
     // Fíjate que el String es de exactamente 16 bytes
-    private static byte[] salt = "esta es la salt!".getBytes(); 
+    private static byte[] salt = "esta es la salt!".getBytes();
+    
+    private static final ResourceBundle RBC = ResourceBundle.getBundle("archivos.symmetricalPrivateKey");
 
     /**
      * Cifra un texto con AES, modo CBC y padding PKCS5Padding (simétrica) y lo
      * retorna
      * 
-     * @param clave   La clave del usuario
-     * @param mensaje El mensaje a cifrar
+     * @param contra
      * @return Mensaje cifrado
      */
-    public String cifrarTexto(String clave, String mensaje) {
+    public String cifrarTexto(String contra) {
         String ret = null;
         KeySpec keySpec = null;
         SecretKeyFactory secretKeyFactory = null;
+        String clave = RBC.getString("KEY");
         try {
 
             // Creamos un SecretKey usando la clave + salt
@@ -71,7 +73,7 @@ public class CifradoEmail{
             // Creamos un Cipher con el algoritmos que vamos a usar
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-            byte[] encodedMessage = cipher.doFinal(mensaje.getBytes()); // Mensaje cifrado !!!
+            byte[] encodedMessage = cipher.doFinal(contra.getBytes()); // Mensaje cifrado !!!
         
 
             // Guardamos el mensaje codificado: IV (16 bytes) + Mensaje
@@ -92,9 +94,11 @@ public class CifradoEmail{
      * retorna
      * 
      * @param clave La clave del usuario
+     * @return 
      */
-    private String descifrarTexto(String clave) {
+    public static String descifrarTexto() {
         String ret = null;
+        String clave = RBC.getString("KEY");
 
         // Fichero leído
         byte[] fileContent = fileReader("C:\\Mikel\\PassCifrada.dat");
@@ -153,7 +157,7 @@ public class CifradoEmail{
      * @param path Path del fichero
      * @return El texto del fichero
      */
-    private byte[] fileReader(String path) {
+    private static byte[] fileReader(String path) {
         byte ret[] = null;
         File file = new File(path);
         try {
@@ -164,17 +168,13 @@ public class CifradoEmail{
         return ret;
     }
 
-//private static final ResourceBundle RBP = ResourceBundle.getBundle("ejemploSimetrico.Contra");
-private static final ResourceBundle RBC = ResourceBundle.getBundle("archivos.symmetricalPrivateKey");
-
     public static void main(String[] args) {
-        String clave = "abcd*1234";
-        String contra = RBC.getString("KEY");
+        String contra = "abcd*1234";
         CifradoEmail cifradoEmail = new CifradoEmail();
-        String mensajeCifrado = cifradoEmail.cifrarTexto(contra, clave);
+        String mensajeCifrado = cifradoEmail.cifrarTexto(contra);
         System.out.println("Cifrado! -> " + mensajeCifrado);
-        System.out.println("-----------");
-        System.out.println("Descifrado! -> " + cifradoEmail.descifrarTexto(contra));
-        System.out.println("-----------");
+        //System.out.println("-----------");
+        //System.out.println("Descifrado! -> " + cifradoEmail.descifrarTexto());
+        //System.out.println("-----------");
     }
 }

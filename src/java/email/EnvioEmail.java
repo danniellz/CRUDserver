@@ -2,6 +2,7 @@
 package email;
 
 
+import cripto.CifradoEmail;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javax.mail.Authenticator;
@@ -52,7 +53,7 @@ public class EnvioEmail {
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(RB.getString("EMAIL"), RB.getString("PASSWORD"));
+                return new PasswordAuthentication(RB.getString("EMAIL"), CifradoEmail.descifrarTexto());
             }
         });
         
