@@ -4,14 +4,18 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Clase que declara el estado SignIn del usuario
@@ -36,6 +40,19 @@ public class SignIn implements Serializable {
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastSignIn;
+    
+    
+    @ManyToOne
+    private Usuario usuario;
+
+    @XmlTransient
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
 
     /**
      * Método que obtiene el id del signIn.
@@ -73,23 +90,24 @@ public class SignIn implements Serializable {
         this.lastSignIn = lastSignIn;
     }
 
-    /**
-     *
-     * @return
-     */
+   
+
+  
+    
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 31 * hash + this.id;
-        hash = 31 * hash + Objects.hashCode(this.lastSignIn);
+        hash = 59 * hash + this.id;
+        hash = 59 * hash + Objects.hashCode(this.lastSignIn);
+        hash = 59 * hash + Objects.hashCode(this.usuario);
         return hash;
     }
 
-    /**
-     *
-     * @param obj
-     * @return
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -108,16 +126,12 @@ public class SignIn implements Serializable {
         if (!Objects.equals(this.lastSignIn, other.lastSignIn)) {
             return false;
         }
+        if (!Objects.equals(this.usuario, other.usuario)) {
+            return false;
+        }
         return true;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    @Override
-    public String toString() {
-        return "SignIn{" + "id=" + id + ", lastSignIn=" + lastSignIn + '}';
-    }
+   
 
 }

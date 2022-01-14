@@ -5,10 +5,11 @@
  */
 package restful;
 
-
+import cripto.Cripto;
+import cripto.Hash;
 import email.EnvioEmail;
 import entidades.Usuario;
-import java.nio.charset.Charset;
+import excepciones.*;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -31,12 +32,12 @@ import javax.ws.rs.core.MediaType;
  *
  * @author Jonathan Viñan y Aritz Arrieta
  */
-
 @Stateless
 @Path("entidades.usuario")
 public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
- private static final Logger LOG = Logger.getLogger(Cripto.class.getName());
- 
+
+    private static final Logger LOG = Logger.getLogger("restful.UsuarioFacadeREST");
+
     @PersistenceContext(unitName = "GESREServerPU")
     private EntityManager em;
 
@@ -48,33 +49,49 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Usuario entity) {
-        super.create(entity);
+        try {
+            LOG.info("UsuarioFacadeREST: Creando usuario");
+            super.create(entity);
+        } catch (CreateException e) {
+            LOG.severe(e.getMessage());
+            throw new InternalServerErrorException(e.getMessage());
+        }
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Integer id, Usuario entity) {
-        super.edit(entity);
+        try {
+            super.edit(entity);
+        } catch (UpdateException ex) {
+            Logger.getLogger(UsuarioFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+        try {
+            super.remove(super.find(id));
+        } catch (ReadException ex) {
+            Logger.getLogger(UsuarioFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DeleteException ex) {
+            Logger.getLogger(UsuarioFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public Usuario find(@PathParam("id") Integer id) {
+    public Usuario find(@PathParam("id") Integer id)/*REVISAR*/ throws ReadException {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
-    public List<Usuario> findAll() {
+    public List<Usuario> findAll() /*REVISAR*/ throws ReadException {
         return super.findAll();
     }
 
@@ -89,7 +106,6 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
                     .setParameter("login", login)
                     .getSingleResult();
 
-
         } catch (Exception e) {
             throw new InternalServerErrorException(e);
         }
@@ -97,12 +113,12 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     }
 
     @GET
-    @Path("nuevaContrasenia/{login}")
+    @Path("nuevaContrasenia/{email}")
     @Produces({MediaType.APPLICATION_XML})
-    public void resetPasswordByLogin(@PathParam("login") String login) {
+    public void resetPasswordByLogin(@PathParam("email") String email) {
         Usuario usuarios = null;
         try {
-            usuarios = findUserByLogin(login);
+            usuarios = buscarEmail(email);
             if (usuarios.getLogin().isEmpty()) {
 
             } else {
@@ -112,15 +128,14 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
                 int int_random = rand.nextInt(99999999 - 00000000) + 99999999;
                 String nuevaContra = String.valueOf(int_random);
                 System.out.println(nuevaContra);
-               String contra = hasheado(nuevaContra);
-               
-                
+                String contra = hasheado(nuevaContra);
+
                 usuarios.setPassword(contra);
                 if (!em.contains(usuarios)) {
                     em.merge(usuarios);
                 }
                 em.flush();
-                EnvioEmail.enviarMail(usuarios.getEmail(), "Reset de Contraseña", newPassword);
+                EnvioEmail.enviarMail(usuarios.getEmail(), "Reset de Contraseña", nuevaContra);
             }
 
         } catch (Exception e) {
@@ -140,17 +155,16 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     public Usuario buscarUsuarioPorLoginYContrasenia(@PathParam("login") String login, @PathParam("password") String password) {
         Usuario usuario;
         try {
-           // password = descifrado(password);
-           byte[] contracifrada= cifrado(password);
-          LOG.info("*******************************************************Contraseña Cifrada: "+new String(contracifrada));
-           byte[] contraDescifra = descifrado(contracifrada);
-           LOG.info("*****************************************************contraseña descifrada: "+ password);
-           String contra =  hasheado(new String(contraDescifra));
-           LOG.info("*****************************************************contraseña Hasheada: "+ contra);
-            
-            
+            // password = descifrado(password);
+            byte[] contracifrada = cifrado(password);
+            LOG.info("*******************************************************Contraseña Cifrada: " + new String(contracifrada));
+            byte[] contraDescifra = descifrado(contracifrada);
+            LOG.info("*****************************************************contraseña descifrada: " + password);
+            String contra = hasheado(new String(contraDescifra));
+            LOG.info("*****************************************************contraseña Hasheada: " + contra);
+
             usuario = (Usuario) em.createNamedQuery("iniciarSesionConLoginYPassword").setParameter("login", login).setParameter("password", contra).getSingleResult();
-       
+
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
         }
@@ -214,7 +228,6 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
         }
 
     }*/
-
     public void actualizar(Usuario usuario) {
         try {
             if (!em.contains(usuario)) {
@@ -226,32 +239,32 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
             throw new InternalServerErrorException(e.getMessage());
         }
     }
-    
-    private byte[] cifrado(String contra){
-         Cripto cripto = new Cripto();
-         byte[] contraCifrada = null;
+
+    private byte[] cifrado(String contra) {
+        Cripto cripto = new Cripto();
+        byte[] contraCifrada = null;
         try {
-           contraCifrada= cripto.cifrar(contra);
+            contraCifrada = cripto.cifrar(contra);
         } catch (Exception ex) {
             Logger.getLogger(UsuarioFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-     return contraCifrada;
-        
+        return contraCifrada;
+
     }
-    
-    private byte[] descifrado(byte[] contra) throws Exception{
+
+    private byte[] descifrado(byte[] contra) throws Exception {
         Cripto cripto = new Cripto();
-        byte[] contraDescifrada= null;
-         contraDescifrada=cripto.descifrar(contra);
-         
-         return contraDescifrada;
-    } 
-    
-    private String hasheado(String contra) throws Exception{
-    Hash hasheado = new Hash();
-     String cifrarTextoEnHash = hasheado.cifrarTextoEnHash(contra);
-  
-    return cifrarTextoEnHash;
+        byte[] contraDescifrada = null;
+        contraDescifrada = cripto.descifrar(contra);
+
+        return contraDescifrada;
+    }
+
+    private String hasheado(String contra) throws Exception {
+        Hash hasheado = new Hash();
+        String cifrarTextoEnHash = hasheado.cifrarTextoEnHash(contra);
+
+        return cifrarTextoEnHash;
     }
 
 }

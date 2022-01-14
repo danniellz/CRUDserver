@@ -6,7 +6,13 @@
 package restful;
 
 import entidades.Incidencia;
+import excepciones.CreateException;
+import excepciones.DeleteException;
+import excepciones.ReadException;
+import excepciones.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -47,7 +53,11 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Incidencia entity) {
-        super.create(entity);
+        try {
+            super.create(entity);
+        } catch (CreateException ex) {
+            Logger.getLogger(IncidenciaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -59,7 +69,11 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Integer id, Incidencia entity) {
-        super.edit(entity);
+        try {
+            super.edit(entity);
+        } catch (UpdateException ex) {
+            Logger.getLogger(IncidenciaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -69,7 +83,15 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+       
+        try {
+            super.remove(super.find(id));
+        } catch (ReadException ex) {
+            Logger.getLogger(IncidenciaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DeleteException ex) {
+            Logger.getLogger(IncidenciaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
     }
 
     /**
@@ -80,8 +102,10 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public Incidencia find(@PathParam("id") Integer id) {
-        return super.find(id);
+    public Incidencia find(@PathParam("id") Integer id) throws ReadException {
+       
+            return super.find(id);
+      
     }
     //findIncidenciaDeUnTrabajador
 
@@ -170,7 +194,7 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
-    public List<Incidencia> findAll() {
+    public List<Incidencia> findAll()/*REVISAR*/ throws ReadException {
         return super.findAll();
     }
    
