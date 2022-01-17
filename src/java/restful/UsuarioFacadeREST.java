@@ -84,14 +84,14 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public Usuario find(@PathParam("id") Integer id)/*REVISAR*/ throws ReadException {
+    public Usuario find(@PathParam("id") Integer id) throws ReadException {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
-    public List<Usuario> findAll() /*REVISAR*/ throws ReadException {
+    public List<Usuario> findAll() throws ReadException {
         return super.findAll();
     }
 

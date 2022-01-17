@@ -19,6 +19,7 @@ import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -33,6 +34,11 @@ import javax.ws.rs.core.MediaType;
 @Stateless
 @Path("entidades.trabajador")
 public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
+
+    /**
+     * Atributo estático y constante que guarda los loggers de esta clase.
+     */
+    private static final Logger LOGGER = Logger.getLogger("restful.TrabajadorFacadeREST");
 
     @PersistenceContext(unitName = "GESREServerPU")
     private EntityManager em;
@@ -53,12 +59,14 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     }
 
     @PUT
-    @Path("{id}")
+    @Override
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Integer id, Trabajador entity) {
+    public void edit(Trabajador entity) {
         try {
+            LOGGER.info("TrabajadorFacadeREST: Editando trabajador");
             super.edit(entity);
         } catch (UpdateException ex) {
+            LOGGER.severe(ex.getMessage());
             Logger.getLogger(TrabajadorFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -75,29 +83,30 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
         }
     }
 
-    @GET
-    @Path("{id}")
-    @Produces({MediaType.APPLICATION_XML})
-    public Trabajador find(@PathParam("id") Integer id) /*REVISAR*/ throws ReadException {
-        return super.find(id);
-    }
-
-    @GET
-    @Override
-    @Produces({MediaType.APPLICATION_XML})
-    public List<Trabajador> findAll()/*REVISAR*/ throws ReadException {
-        return super.findAll();
-    }
-
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
 
     @GET
-    @Path("buscarTodosLosTrabajadores")
+    @Path("BuscarUnTrabajador/{fullName}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Trabajador> BuscarTodosLosTrabajadores() {
+    public List<Trabajador> buscarTrabajadorPorNombre(@PathParam("fullName") String fullName) throws ReadException {
+        List<Trabajador> trabajador = null;
+        try {
+            LOGGER.info("TrabajadorFacadeREST: Buscando trabajador por el nombre");
+            trabajador = em.createNamedQuery("buscarTrabajadorPorNombre").setParameter("fullName", fullName).getResultList();
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            throw new ReadException();
+        }
+        return trabajador;
+    }
+
+    @GET
+    @Path("BuscarTodosLosTrabajadores")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Trabajador> buscarTodosLosTrabajadores() {
         List<Trabajador> trabajadores = null;
         try {
             trabajadores = em.createNamedQuery("buscarTodosLosTrabajadores").getResultList();
@@ -108,12 +117,12 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     }
 
     @GET
-    @Path("trabajadoresSinIncidenciasPorId")
+    @Path("BuscarTrabajadoresSinIncidencias")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Trabajador> trabajadoresSinIncidenciasPorId() {
+    public List<Trabajador> buscarTrabajadoresSinIncidencias() {
         List<Trabajador> trabajadores = null;
         try {
-            trabajadores = (List<Trabajador>) em.createNamedQuery("trabajadoresSinIncidenciasPorId").getResultList();
+            trabajadores = (List<Trabajador>) em.createNamedQuery("buscarTrabajadoresSinIncidencias").getResultList();
         } catch (Exception e) {
         }
         return trabajadores;

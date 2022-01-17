@@ -30,8 +30,12 @@ import javax.xml.bind.annotation.XmlTransient;
     )
     ,
     @NamedQuery(
-            name = "trabajadoresSinIncidenciasPorId", query = "SELECT t FROM trabajador t WHERE t.idUsuario  NOT IN (SELECT r.trabajador.idUsuario from Recoge r)"
+            name = "buscarTrabajadoresSinIncidencias", query = "SELECT t FROM trabajador t WHERE t.idUsuario  NOT IN (SELECT r.trabajador.idUsuario from Recoge r)"
     )
+    ,
+     @NamedQuery(
+            name = "buscarTrabajadorPorNombre", query = "SELECT t FROM trabajador t WHERE t.fullName LIKE :fullName"
+    ),
 })
 
 @Entity(name = "trabajador")
@@ -58,10 +62,10 @@ public class Trabajador extends Usuario implements Serializable {
      * Relacion 1:N con Piezas
      *
      */
-    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade=ALL)
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade = ALL)
     private Set<Pieza> piezas;
 
-    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade=ALL)
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade = ALL)
     private Set<Recoge> recoge;
 
     // @XmlTransient
