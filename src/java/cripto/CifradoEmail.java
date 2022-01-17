@@ -50,6 +50,8 @@ public class CifradoEmail{
     
     private static final ResourceBundle RBC = ResourceBundle.getBundle("archivos.symmetricalPrivateKey");
 
+    private static String clave = RBC.getString("KEY");
+    
     /**
      * Cifra un texto con AES, modo CBC y padding PKCS5Padding (simétrica) y lo
      * retorna
@@ -61,7 +63,7 @@ public class CifradoEmail{
         String ret = null;
         KeySpec keySpec = null;
         SecretKeyFactory secretKeyFactory = null;
-        String clave = RBC.getString("KEY");
+        //String clave = RBC.getString("KEY");
         try {
 
             // Creamos un SecretKey usando la clave + salt
@@ -79,7 +81,7 @@ public class CifradoEmail{
             // Guardamos el mensaje codificado: IV (16 bytes) + Mensaje
             byte[] combined = encodedMessage;
 
-            fileWriter("C:\\Mikel\\PassCifrada.dat", combined);
+            fileWriter(".\\src\\java\\archivos\\PassCifrada.dat", combined);
 
             ret = new String(encodedMessage);
 
@@ -98,10 +100,9 @@ public class CifradoEmail{
      */
     public static String descifrarTexto() {
         String ret = null;
-        String clave = RBC.getString("KEY");
-
+        
         // Fichero leído
-        byte[] fileContent = fileReader("C:\\Mikel\\PassCifrada.dat");
+        byte[] fileContent = fileReader(".\\src\\java\\archivos\\PassCifrada.dat");
         KeySpec keySpec = null;
         SecretKeyFactory secretKeyFactory = null;
         try {
@@ -113,27 +114,12 @@ public class CifradoEmail{
 
             // Creamos un Cipher con el algoritmos que vamos a usar
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            //IvParameterSpec ivParam = new IvParameterSpec(Arrays.copyOfRange(fileContent, 0, 16)); // La IV est� aqu�
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] decodedMessage = cipher.doFinal(fileContent);
             ret = new String(decodedMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ret;
-    }
-
-    /**
-     * Retorna una concatenaci�n de ambos arrays
-     * 
-     * @param array1
-     * @param array2
-     * @return Concatenaci�n de ambos arrays
-     */
-    private byte[] concatArrays(byte[] array1, byte[] array2) {
-        byte[] ret = new byte[array1.length + array2.length];
-        System.arraycopy(array1, 0, ret, 0, array1.length);
-        System.arraycopy(array2, 0, ret, array1.length, array2.length);
         return ret;
     }
 
@@ -173,8 +159,8 @@ public class CifradoEmail{
         CifradoEmail cifradoEmail = new CifradoEmail();
         String mensajeCifrado = cifradoEmail.cifrarTexto(contra);
         System.out.println("Cifrado! -> " + mensajeCifrado);
-        //System.out.println("-----------");
-        //System.out.println("Descifrado! -> " + cifradoEmail.descifrarTexto());
-        //System.out.println("-----------");
+        System.out.println("-----------");
+        System.out.println("Descifrado! -> " + cifradoEmail.descifrarTexto());
+        System.out.println("-----------");
     }
 }
