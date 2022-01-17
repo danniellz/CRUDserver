@@ -1,5 +1,6 @@
 package restful;
 
+import excepciones.*;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -36,12 +37,16 @@ public abstract class AbstractFacade<T> {
 
     /**
      * Crear
-     *
      * @param entity entidad
+     * @throws CreateException 
      */
-    public void create(T entity) {
-        LOG.info("GESREserver/AbstractFacade: Creando nuevo elemento en '" + entity.toString() + "'");
-        getEntityManager().persist(entity);
+    public void create(T entity) throws CreateException {
+        try {
+            LOG.info("GESREserver/AbstractFacade: Creando nuevo elemento en '" + entity.toString() + "'");
+            getEntityManager().persist(entity);
+        } catch (Exception e) {
+            throw new CreateException(e.getMessage());
+        }
     }
 
     /**
@@ -49,9 +54,14 @@ public abstract class AbstractFacade<T> {
      *
      * @param entity entidad
      */
-    public void edit(T entity) {
-        LOG.info("GESREserver/AbstractFacade: Actualizando un elemento en '" + entity.toString() + "'");
-        getEntityManager().merge(entity);
+    public void edit(T entity) throws UpdateException {
+        try {
+            LOG.info("GESREserver/AbstractFacade: Actualizando un elemento en '" + entity.toString() + "'");
+            getEntityManager().merge(entity);
+        } catch (Exception e) {
+            throw new UpdateException(e.getMessage());
+        }
+
     }
 
     /**
@@ -59,9 +69,13 @@ public abstract class AbstractFacade<T> {
      *
      * @param entity entidad
      */
-    public void remove(T entity) {
-        LOG.info("GESREserver/AbstractFacade: Borrando un elemento de '" + entity.toString() + "'");
-        getEntityManager().remove(getEntityManager().merge(entity));
+    public void remove(T entity) throws DeleteException {
+        try {
+            LOG.info("GESREserver/AbstractFacade: Borrando un elemento de '" + entity.toString() + "'");
+            getEntityManager().remove(getEntityManager().merge(entity));
+        } catch (Exception e) {
+            throw new DeleteException(e.getMessage());
+        }
     }
 
     /**
@@ -70,9 +84,13 @@ public abstract class AbstractFacade<T> {
      * @param id id de la entidad
      * @return devuelve la entidad con dicho id
      */
-    public T find(Object id) {
-        LOG.info("GESREserver/AbstractFacade: Buscando por ID '" + id + "' en la entidad '" + entityClass.getSimpleName() + "'");
-        return getEntityManager().find(entityClass, id);
+    public T find(Object id) throws ReadException {
+        try {
+            LOG.info("GESREserver/AbstractFacade: Buscando por ID '" + id + "' en la entidad '" + entityClass.getSimpleName() + "'");
+            return getEntityManager().find(entityClass, id);
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
     }
 
     /**
@@ -80,11 +98,15 @@ public abstract class AbstractFacade<T> {
      *
      * @return devuelve una lista de toda la entidad
      */
-    public List<T> findAll() {
-        LOG.info("GESREserver/AbstractFacade: Buscando toda la información de '" + entityClass.getSimpleName() + "'");
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        cq.select(cq.from(entityClass));
-        return getEntityManager().createQuery(cq).getResultList();
+    public List<T> findAll() throws ReadException {
+        try {
+            LOG.info("GESREserver/AbstractFacade: Buscando toda la información de '" + entityClass.getSimpleName() + "'");
+            javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
+            cq.select(cq.from(entityClass));
+            return getEntityManager().createQuery(cq).getResultList();
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
     }
 
     /**

@@ -3,12 +3,15 @@ package entidades;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
+import static java.util.logging.Level.ALL;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,6 +19,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -96,6 +100,17 @@ public class Usuario implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastPasswordChange;
 
+    
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
+    private Set<SignIn> signIn;
+
+    public Set<SignIn> getSignIn() {
+        return signIn;
+    }
+
+    public void setSignIn(Set<SignIn> signIn) {
+        this.signIn = signIn;
+    }
     /**
      * Método que obtiene el id del usuario.
      *
@@ -246,17 +261,18 @@ public class Usuario implements Serializable {
      *
      * @return devuelve el hashcode
      */
-    @Override
+    @Override   
     public int hashCode() {
         int hash = 7;
-        hash = 29 * hash + Objects.hashCode(this.idUsuario);
-        hash = 29 * hash + Objects.hashCode(this.login);
-        hash = 29 * hash + Objects.hashCode(this.email);
-        hash = 29 * hash + Objects.hashCode(this.fullName);
-        hash = 29 * hash + Objects.hashCode(this.status);
-        hash = 29 * hash + Objects.hashCode(this.privilege);
-        hash = 29 * hash + Objects.hashCode(this.password);
-        hash = 29 * hash + Objects.hashCode(this.lastPasswordChange);
+        hash = 67 * hash + Objects.hashCode(this.idUsuario);
+        hash = 67 * hash + Objects.hashCode(this.login);
+        hash = 67 * hash + Objects.hashCode(this.email);
+        hash = 67 * hash + Objects.hashCode(this.fullName);
+        hash = 67 * hash + Objects.hashCode(this.status);
+        hash = 67 * hash + Objects.hashCode(this.privilege);
+        hash = 67 * hash + Objects.hashCode(this.password);
+        hash = 67 * hash + Objects.hashCode(this.lastPasswordChange);
+        hash = 67 * hash + Objects.hashCode(this.signIn);
         return hash;
     }
 
@@ -266,7 +282,7 @@ public class Usuario implements Serializable {
      * @param obj objeto a comparar
      * @return devuelve un booleano si son o no iguales
      */
-    @Override
+    @Override      
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -300,6 +316,9 @@ public class Usuario implements Serializable {
             return false;
         }
         if (!Objects.equals(this.lastPasswordChange, other.lastPasswordChange)) {
+            return false;
+        }
+        if (!Objects.equals(this.signIn, other.signIn)) {
             return false;
         }
         return true;
