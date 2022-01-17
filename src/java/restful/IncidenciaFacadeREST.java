@@ -6,7 +6,13 @@
 package restful;
 
 import entidades.Incidencia;
+import excepciones.CreateException;
+import excepciones.DeleteException;
+import excepciones.ReadException;
+import excepciones.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -32,37 +38,83 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     @PersistenceContext(unitName = "GESREServerPU")
     private EntityManager em;
 
+    /**
+     * Restfull de la Entidad de Incidencia, con CRUD completo
+     */
     public IncidenciaFacadeREST() {
         super(Incidencia.class);
     }
 
+    /**
+     * 
+     * @param entity
+     */
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Incidencia entity) {
-        super.create(entity);
+        try {
+            super.create(entity);
+        } catch (CreateException ex) {
+            Logger.getLogger(IncidenciaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
+    /**
+     *
+     * @param id
+     * @param entity
+     */
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Integer id, Incidencia entity) {
-        super.edit(entity);
+        try {
+            super.edit(entity);
+        } catch (UpdateException ex) {
+            Logger.getLogger(IncidenciaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
+    /**
+     *
+     * @param id
+     */
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+       
+        try {
+            super.remove(super.find(id));
+        } catch (ReadException ex) {
+            Logger.getLogger(IncidenciaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DeleteException ex) {
+            Logger.getLogger(IncidenciaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public Incidencia find(@PathParam("id") Integer id) {
-        return super.find(id);
+    public Incidencia find(@PathParam("id") Integer id) throws ReadException {
+       
+            return super.find(id);
+      
     }
     //findIncidenciaDeUnTrabajador
+
+    /**
+     *
+     * @param idUsuario
+     * @return
+     * @throws InternalServerErrorException
+     */
     @GET
     @Path("/InciTrabajador/{idUsuario}")
     @Produces({MediaType.APPLICATION_XML})
@@ -83,6 +135,13 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     }
 
      //findIncidenciaDeUnUsuario
+
+    /**
+     *
+     * @param idUsuario
+     * @return
+     * @throws InternalServerErrorException
+     */
     @GET
     @Path("/InciUsuario/{idUsuario}")
     @Produces({MediaType.APPLICATION_XML})
@@ -102,6 +161,13 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     
     }
     //findIncidenciaDeUnUsuarioCerrada
+
+    /**
+     *
+     * @param idUsuario
+     * @return
+     * @throws InternalServerErrorException
+     */
       @GET
     @Path("/InciAcabadaUsuario/{idUsuario}")
     @Produces({MediaType.APPLICATION_XML})
@@ -121,15 +187,21 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     
     }
     
+    /**
+     *
+     * @return
+     */
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
-    public List<Incidencia> findAll() {
+    public List<Incidencia> findAll()/*REVISAR*/ throws ReadException {
         return super.findAll();
     }
    
-    
-   
+    /**
+     *
+     * @return
+     */
     @Override
     protected EntityManager getEntityManager() {
         return em;

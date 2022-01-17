@@ -28,7 +28,7 @@ public class Hash {
         try {
             LOG.info("GESREserver/Hash: Cifrando clave");
             //Obtener una instancia de MessageDigest que usa SHA
-            messageDigest = MessageDigest.getInstance("SHA-512");
+            messageDigest = MessageDigest.getInstance("SHA-1");
             //Convierte la contraseña en un array de bytes 
             byte dataBytes[] = contra.getBytes();
             //Actualiza el MessageDigest con el array de bytes 

@@ -7,7 +7,13 @@ package restful;
 
 import entidades.Recoge;
 import entidades.RecogeId;
+import excepciones.CreateException;
+import excepciones.DeleteException;
+import excepciones.ReadException;
+import excepciones.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -62,27 +68,41 @@ public class RecogeFacadeREST extends AbstractFacade<Recoge> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Recoge entity) {
-        super.create(entity);
+        try {
+            super.create(entity);
+        } catch (CreateException ex) {
+            Logger.getLogger(RecogeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") PathSegment id, Recoge entity) {
-        super.edit(entity);
+        try {
+            super.edit(entity);
+        } catch (UpdateException ex) {
+            Logger.getLogger(RecogeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") PathSegment id) {
         entidades.RecogeId key = getPrimaryKey(id);
-        super.remove(super.find(key));
+        try {
+            super.remove(super.find(key));
+        } catch (ReadException ex) {
+            Logger.getLogger(RecogeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DeleteException ex) {
+            Logger.getLogger(RecogeFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Recoge find(@PathParam("id") PathSegment id) {
+    public Recoge find(@PathParam("id") PathSegment id) /*REVISAR*/throws ReadException {
         entidades.RecogeId key = getPrimaryKey(id);
         return super.find(key);
     }
@@ -90,7 +110,7 @@ public class RecogeFacadeREST extends AbstractFacade<Recoge> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
-    public List<Recoge> findAll() {
+    public List<Recoge> findAll() /*REVISAR*/ throws ReadException {
         return super.findAll();
     }
 

@@ -1,8 +1,12 @@
 package restful;
 
 import entidades.Pieza;
+import excepciones.CreateException;
+import excepciones.DeleteException;
 import excepciones.ReadException;
+import excepciones.UpdateException;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -48,7 +52,11 @@ public class PiezaFacadeREST extends AbstractFacade<Pieza> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Pieza entity) {
-        super.create(entity);
+        try {
+            super.create(entity);
+        } catch (CreateException ex) {
+            Logger.getLogger(PiezaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -61,7 +69,11 @@ public class PiezaFacadeREST extends AbstractFacade<Pieza> {
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(@PathParam("id") Integer id, Pieza entity) {
-        super.edit(entity);
+        try {
+            super.edit(entity);
+        } catch (UpdateException ex) {
+            Logger.getLogger(PiezaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -72,7 +84,13 @@ public class PiezaFacadeREST extends AbstractFacade<Pieza> {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+        try {
+            super.remove(super.find(id));
+        } catch (ReadException ex) {
+            Logger.getLogger(PiezaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DeleteException ex) {
+            Logger.getLogger(PiezaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -84,7 +102,7 @@ public class PiezaFacadeREST extends AbstractFacade<Pieza> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public Pieza find(@PathParam("id") Integer id) {
+    public Pieza find(@PathParam("id") Integer id)/*REVISAR*/ throws ReadException {
         return super.find(id);
     }
 
@@ -162,7 +180,7 @@ public class PiezaFacadeREST extends AbstractFacade<Pieza> {
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
-    public List<Pieza> findAll() {
+    public List<Pieza> findAll() /*REVISAR*/ throws ReadException {
         return super.findAll();
     }
 
