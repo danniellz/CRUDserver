@@ -10,6 +10,7 @@ import excepciones.CreateException;
 import excepciones.DeleteException;
 import excepciones.ReadException;
 import excepciones.UpdateException;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,6 +84,13 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
         }
     }
 
+    @GET
+    @Path("{id}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Trabajador find(@PathParam("id") Integer id) throws ReadException {
+        return super.find(id);
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
@@ -109,7 +117,7 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     public List<Trabajador> buscarTodosLosTrabajadores() {
         List<Trabajador> trabajadores = null;
         try {
-            trabajadores = em.createNamedQuery("buscarTodosLosTrabajadores").getResultList();
+            trabajadores = (List<Trabajador>) em.createNamedQuery("buscarTodosLosTrabajadores").getResultList();
         } catch (Exception ex) {
             System.out.println("error");
         }

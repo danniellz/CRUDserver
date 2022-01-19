@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.security.spec.KeySpec;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -21,11 +22,11 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * <b>Criptografía Simétrica (Clave Secreta)</b> <br/>
  * <br/>
- * 
+ *
  * Esta clase permite cifrar un texto mediante una <b>clave secreta</b> y lo
  * guarda en un fichero. La única forma de descifrar el texto es mediante dicha
  * clave, que tanto el <u>emisor</u> como el <u>receptor</u> la deben conocer.
- * 
+ *
  * En este caso vamos a utilizar:
  * <ul>
  * <li>El algoritmo AES</li>
@@ -43,19 +44,42 @@ import javax.crypto.spec.SecretKeySpec;
  * Generalmente un salt se genera aleatoriamente cuando creas la clave, así que
  * <u>necesitas guardar</u> la clave y su salt para poder cifrar y descifrar.
  */
-public class CifradoEmail{
+public class CifradoEmail {
 
-    // Fíjate que el String es de exactamente 16 bytes
+    /**
+     * Atributo estático y constante que guarda los loggers de la clase.
+     */
+    private static final Logger LOGGER = Logger.getLogger("seguridad.Cryto");
+
+    /**
+     * Variable que guarda el salt. Fíjate que el String es de exactamente 16
+     * bytes
+     */
     private static byte[] salt = "esta es la salt!".getBytes();
-    
+
     private static final ResourceBundle RBC = ResourceBundle.getBundle("archivos.symmetricalPrivateKey");
 
     private static String clave = RBC.getString("KEY");
-    
+
+    /**
+     * Atributo que guarda la ruta del email cifrado del archivo de propiedades.
+     */
+    private final static String EMAIL_PATH = ResourceBundle.getBundle("archivos.rutas").getString("EMAIL_EMAIL");
+    /**
+     * Atributo que guarda la ruta de la contraseña cifrada privada del archivo
+     * de propiedades.
+     */
+    private final static String CONTRASENA_PATH = ResourceBundle.getBundle("archivos.rutas").getString("EMAIL_CONTRASENA");
+
+    /**
+     * Atributo que coge la clave privada del archivo de propiedades.
+     */
+    private final static String CLAVE = ResourceBundle.getBundle("archivos.private").getString("CONTRA");
+
     /**
      * Cifra un texto con AES, modo CBC y padding PKCS5Padding (simétrica) y lo
      * retorna
-     * 
+     *
      * @param contra
      * @return Mensaje cifrado
      */
@@ -76,7 +100,6 @@ public class CifradoEmail{
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
             byte[] encodedMessage = cipher.doFinal(contra.getBytes()); // Mensaje cifrado !!!
-        
 
             // Guardamos el mensaje codificado: IV (16 bytes) + Mensaje
             byte[] combined = encodedMessage;
@@ -92,15 +115,15 @@ public class CifradoEmail{
     }
 
     /**
-     * Descifra un texto con AES, modo CBC y padding PKCS5Padding (simétrica) y lo
-     * retorna
-     * 
+     * Descifra un texto con AES, modo CBC y padding PKCS5Padding (simétrica) y
+     * lo retorna
+     *
      * @param clave La clave del usuario
-     * @return 
+     * @return
      */
     public static String descifrarTexto() {
         String ret = null;
-        
+
         // Fichero leído
         byte[] fileContent = fileReader(".\\src\\java\\archivos\\PassCifrada.dat");
         KeySpec keySpec = null;
@@ -125,21 +148,21 @@ public class CifradoEmail{
 
     /**
      * Escribe un fichero
-     * 
+     *
      * @param path Path del fichero
      * @param text Texto a escibir
      */
     private void fileWriter(String path, byte[] text) {
         try (FileOutputStream fos = new FileOutputStream(path)) {
-                fos.write(text);
+            fos.write(text);
         } catch (IOException e) {
-                e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
     /**
      * Retorna el contenido de un fichero
-     * 
+     *
      * @param path Path del fichero
      * @return El texto del fichero
      */
@@ -155,6 +178,23 @@ public class CifradoEmail{
     }
 
     public static void main(String[] args) {
+        // Cifra las credenciales de la cuenta de correo
+        CifradoSimetrico cifradoSimetrico = new CifradoSimetrico();
+        //cifradoSimetrico.cifrarTextoConClavePrivada("info.ComicSans@gmail.com", "abcd*1234");
+
+        // Descifra las credenciales de la cuenta de correo
+        String textoDescifrado = cifradoSimetrico.descifrarEmailConClavePrivada();
+        System.out.println("EMAIL Descifrado: " + textoDescifrado);
+        System.out.println("-----------");
+        textoDescifrado = cifradoSimetrico.descifrarContraseñaConClavePrivada();
+        System.out.println("Contraseña Descifrada: " + textoDescifrado);
+
+        //Mandar mail
+        /*Mail mail = new Mail();
+        mail.enviarMail("naranguren3@gmail.com");*/
+    }
+    /*
+    public static void main(String[] args) {
         String contra = "abcd*1234";
         CifradoEmail cifradoEmail = new CifradoEmail();
         String mensajeCifrado = cifradoEmail.cifrarTexto(contra);
@@ -162,5 +202,5 @@ public class CifradoEmail{
         System.out.println("-----------");
         System.out.println("Descifrado! -> " + cifradoEmail.descifrarTexto());
         System.out.println("-----------");
-    }
+    }*/
 }

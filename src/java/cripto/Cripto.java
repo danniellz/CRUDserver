@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package cripto;
 
 import java.security.interfaces.RSAPrivateKey;
@@ -35,14 +40,14 @@ public class Cripto {
         cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
         //Keys a utilizar
         RSAPublicKey pubKey = (RSAPublicKey) PublicKeyReader.get();
-       // RSAPrivateKey privKey = (RSAPrivateKey) PrivateKeyReader.get();
+        // RSAPrivateKey privKey = (RSAPrivateKey) PrivateKeyReader.get();
         //Iniciar Cipher en modo Encriptacion con clave publica
         cipher.init(Cipher.ENCRYPT_MODE, pubKey);
         //Cifrar
-       byte[] cipherText = cipher.doFinal(contra.getBytes());
+        byte[] cipherText = cipher.doFinal(contra.getBytes());
         // Mostrar Cifrado
-        System.out.println("Contraseña Cifrada: " +new String(cipherText));
-        return  cipherText;
+        System.out.println("Contraseña Cifrada: " + new String(cipherText));
+        return cipherText;
 
     }
 
@@ -51,23 +56,23 @@ public class Cripto {
      *
      * @param contraHex contraseña con hash
      * @throws Exception
-     * @return 
+     * @return
      */
     public byte[] descifrar(byte[] contra) throws Exception {
         LOG.info("GESREserver/Cripto: CLASE CRIPTO ***** Descifrando contraseña...");
         cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-       
+
         RSAPrivateKey privKey = (RSAPrivateKey) PrivateKeyReader.get();
         LOG.info("USO esto **************KEY");
         // Iniciar descifrado con la clave privada 
         cipher.init(Cipher.DECRYPT_MODE, privKey);
-            LOG.info("Desencripto?????????????????????????????????????");
+        LOG.info("Desencripto?????????????????????????????????????");
         byte[] contraDescifrada = cipher.doFinal(contra);
-         
+
         System.out.println("Contraseña Descifrada: " + new String(contraDescifrada));
         return contraDescifrada;
     }
-    
+
     /**
      * Metodo que convierte un array de bytes en un string hexadecimal.
      *
@@ -77,7 +82,6 @@ public class Cripto {
     /*
     private String byteToHexadecimal(byte[] bytes) {
         LOG.info("CifradoAsimetrico: Convirtiendo bytes a hexadecimal");
-
         String HEX = "";
         for (int i = 0; i < bytes.length; i++) {
             String h = Integer.toHexString(bytes[i] & 0xFF);
@@ -88,14 +92,13 @@ public class Cripto {
         }
         return HEX.toUpperCase();
     }
-
     /**
      * Metodo que convierte un string con valor hexadecimal a un array de bytes.
      *
      * @param hexadecimal string hexadecimal
      * @return devuelve un array de bytes
      */
-   /* private byte[] HexadecimalToByte(String hexadecimal) {
+ /* private byte[] HexadecimalToByte(String hexadecimal) {
         LOG.info("CifradoAsimetrico: Convirtiendo hexadecimal a bytes");
         int length = hexadecimal.length();
         byte[] data = new byte[length / 2];
