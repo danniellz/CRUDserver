@@ -3,6 +3,7 @@ package entidades;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -59,12 +60,12 @@ public class Pieza implements Serializable {
     /**
      * Relacion ManyToOne con trabajador
      */
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)//cascade = (CascadeType.ALL) con casade me borra el trabajador si borro la pieza
     private Trabajador trabajador;
     /**
      * Relacion OneToMany con incidencias
      */
-    @OneToMany(mappedBy = "pieza", fetch=FetchType.EAGER)
+    @OneToMany(mappedBy = "pieza", fetch = FetchType.EAGER)//, cascade = (CascadeType.ALL)
     private Set<Incidencia> incidencias;
 
     //GETTERS y SETTERS
@@ -187,7 +188,7 @@ public class Pieza implements Serializable {
     public int hashCode() {
         int hash = 3;
         hash = 97 * hash + Objects.hashCode(this.id);
-       
+
         return hash;
     }
 
@@ -239,6 +240,5 @@ public class Pieza implements Serializable {
     public String toString() {
         return "Pieza{" + "id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", stock=" + stock + '}';
     }
-    
 
 }

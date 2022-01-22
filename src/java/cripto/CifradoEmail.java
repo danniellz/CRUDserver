@@ -9,13 +9,21 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
-
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -57,10 +65,6 @@ public class CifradoEmail {
      */
     private static byte[] salt = "esta es la salt!".getBytes();
 
-    private static final ResourceBundle RBC = ResourceBundle.getBundle("archivos.symmetricalPrivateKey");
-
-    private static String clave = RBC.getString("KEY");
-
     /**
      * Atributo que guarda la ruta del email cifrado del archivo de propiedades.
      */
@@ -74,15 +78,8 @@ public class CifradoEmail {
     /**
      * Atributo que coge la clave privada del archivo de propiedades.
      */
-    private final static String CLAVE = ResourceBundle.getBundle("archivos.private").getString("CONTRA");
+    private final static String CLAVE = ResourceBundle.getBundle("archivos.private").getString("KEY");
 
-    /**
-     * Cifra un texto con AES, modo CBC y padding PKCS5Padding (simétrica) y lo
-     * retorna
-     *
-     * @param contra
-     * @return Mensaje cifrado
-     */
     public String cifrarTexto(String contra) {
         String ret = null;
         KeySpec keySpec = null;
@@ -91,7 +88,7 @@ public class CifradoEmail {
         try {
 
             // Creamos un SecretKey usando la clave + salt
-            keySpec = new PBEKeySpec(clave.toCharArray(), salt, 65536, 128); // AES-128
+            keySpec = new PBEKeySpec(CLAVE.toCharArray(), salt, 65536, 128); // AES-128
             secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
             SecretKey privateKey = new SecretKeySpec(key, 0, key.length, "AES");
@@ -130,7 +127,7 @@ public class CifradoEmail {
         SecretKeyFactory secretKeyFactory = null;
         try {
             // Creamos un SecretKey usando la clave + salt
-            keySpec = new PBEKeySpec(clave.toCharArray(), salt, 65536, 128); // AES-128
+            keySpec = new PBEKeySpec(CLAVE.toCharArray(), salt, 65536, 128); // AES-128
             secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
             SecretKey privateKey = new SecretKeySpec(key, 0, key.length, "AES");
@@ -161,46 +158,148 @@ public class CifradoEmail {
     }
 
     /**
-     * Retorna el contenido de un fichero
+     * Retorna el contenido de un fichero /**
      *
      * @param path Path del fichero
      * @return El texto del fichero
      */
-    private static byte[] fileReader(String path) {
-        byte ret[] = null;
-        File file = new File(path);
+    private static byte[] fileReader(String filePath) {
+        byte[] keyBytes = null;
+        File file = new File(filePath);
         try {
-            ret = Files.readAllBytes(file.toPath());
+            keyBytes = Files.readAllBytes(file.toPath());
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return keyBytes;
+    }
+
+    /**
+     *
+     * @param email
+     * @param contraseña
+     * @throws InvalidKeySpecException
+     */
+    public void cifrarTextoConClavePrivada(String email, String contraseña) {
+
+        KeySpec keySpec = null;
+        SecretKeyFactory secretKeyFactory = null;
+        //String clave = RBC.getString("KEY");
+        try {
+            LOGGER.info("CifradoSimetrico: Cifrando con clave privada");
+            // Creamos un SecretKey usando la clave + salt
+            keySpec = new PBEKeySpec(CLAVE.toCharArray(), salt, 65536, 128); // AES-128
+            secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
+            SecretKey privateKey = new SecretKeySpec(key, 0, key.length, "AES");
+
+            // Creamos un Cipher con el algoritmos que vamos a usar
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+
+            byte[] encodedEmail = cipher.doFinal(email.getBytes()); // Mensaje cifrado !!!
+            byte[] encodedContraseña = cipher.doFinal(contraseña.getBytes());
+
+            // Guardamos el mensaje codificado: IV (16 bytes) + Mensaje
+            byte[] combinedEmail = encodedEmail;
+            byte[] combinedContraseña = encodedContraseña;
+            // Escribe los textos cifrados en distintos archivos.
+            fileWriter(EMAIL_PATH, combinedEmail);
+            fileWriter(CONTRASENA_PATH, combinedContraseña);
+
+        } catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
+            LOGGER.severe(e.getMessage());
+        }
+    }
+
+    /**
+     * Cifra un texto con AES, modo CBC y padding PKCS5Padding (simétrica) y lo
+     * retorna
+     *
+     * @param contra
+     * @return Mensaje cifrado
+     */
+    public String cifrarTextoEmailContraseña(String contra) {
+        LOGGER.info("CREANDO CIFRADOD EMAIL_CONTRASENA");
+        String ret = null;
+        KeySpec keySpec = null;
+        SecretKeyFactory secretKeyFactory = null;
+        //String clave = RBC.getString("KEY");
+        try {
+
+            // Creamos un SecretKey usando la clave + salt
+            keySpec = new PBEKeySpec(CLAVE.toCharArray(), salt, 65536, 128); // AES-128
+            secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
+            SecretKey privateKey = new SecretKeySpec(key, 0, key.length, "AES");
+
+            // Creamos un Cipher con el algoritmos que vamos a usar
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+            byte[] encodedMessage = cipher.doFinal(contra.getBytes()); // Mensaje cifrado !!!
+
+            // Guardamos el mensaje codificado: IV (16 bytes) + Mensaje
+            byte[] combined = encodedMessage;
+
+            // fileWriter(".\\src\\java\\archivos\\PassCifrada.dat", combined);
+            fileWriter(CONTRASENA_PATH, combined);
+            ret = new String(encodedMessage);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return ret;
     }
 
-    public static void main(String[] args) {
-        // Cifra las credenciales de la cuenta de correo
-        CifradoSimetrico cifradoSimetrico = new CifradoSimetrico();
-        //cifradoSimetrico.cifrarTextoConClavePrivada("info.ComicSans@gmail.com", "abcd*1234");
+    public String descifrarEmailConClavePrivada() {
+        String ret = null;
 
-        // Descifra las credenciales de la cuenta de correo
-        String textoDescifrado = cifradoSimetrico.descifrarEmailConClavePrivada();
-        System.out.println("EMAIL Descifrado: " + textoDescifrado);
-        System.out.println("-----------");
-        textoDescifrado = cifradoSimetrico.descifrarContraseñaConClavePrivada();
-        System.out.println("Contraseña Descifrada: " + textoDescifrado);
+        // Fichero leído
+        //   byte[] fileContent = fileReader(".\\src\\java\\archivos\\PassCifrada.dat");
+        byte[] fileContent = fileReader(EMAIL_PATH);
+        KeySpec keySpec = null;
+        SecretKeyFactory secretKeyFactory = null;
+        try {
+            // Creamos un SecretKey usando la clave + salt
+            keySpec = new PBEKeySpec(CLAVE.toCharArray(), salt, 65536, 128); // AES-128
+            secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
+            SecretKey privateKey = new SecretKeySpec(key, 0, key.length, "AES");
 
-        //Mandar mail
-        /*Mail mail = new Mail();
-        mail.enviarMail("naranguren3@gmail.com");*/
+            // Creamos un Cipher con el algoritmos que vamos a usar
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            byte[] decodedMessage = cipher.doFinal(fileContent);
+            ret = new String(decodedMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
     }
-    /*
-    public static void main(String[] args) {
-        String contra = "abcd*1234";
-        CifradoEmail cifradoEmail = new CifradoEmail();
-        String mensajeCifrado = cifradoEmail.cifrarTexto(contra);
-        System.out.println("Cifrado! -> " + mensajeCifrado);
-        System.out.println("-----------");
-        System.out.println("Descifrado! -> " + cifradoEmail.descifrarTexto());
-        System.out.println("-----------");
-    }*/
+
+    public String descifrarContraseñaConClavePrivada() {
+        String ret = null;
+
+        // Fichero leído
+        byte[] fileContent = fileReader(CONTRASENA_PATH);
+        KeySpec keySpec = null;
+        SecretKeyFactory secretKeyFactory = null;
+        try {
+            // Creamos un SecretKey usando la clave + salt
+            keySpec = new PBEKeySpec(CLAVE.toCharArray(), salt, 65536, 128); // AES-128
+            secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            byte[] key = secretKeyFactory.generateSecret(keySpec).getEncoded();
+            SecretKey privateKey = new SecretKeySpec(key, 0, key.length, "AES");
+
+            // Creamos un Cipher con el algoritmos que vamos a usar
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            byte[] decodedMessage = cipher.doFinal(fileContent);
+            ret = new String(decodedMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
 }

@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     ,
     @NamedQuery(name = "buscarUsuarioConLoginYPassword", query = "SELECT u FROM Usuario u WHERE u.login LIKE:login and u.password LIKE:password")
     ,
-    @NamedQuery(name = "buscarUsuarioPorEmail", query = "SELECT u FROM Usuario u WHERE u.email LIKE :correo")
+    @NamedQuery(name = "buscarUsuarioPorEmail", query = "SELECT u FROM Usuario u WHERE u.email LIKE :email")
 
 })
 

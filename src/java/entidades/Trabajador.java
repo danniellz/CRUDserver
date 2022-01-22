@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
+import javax.persistence.CascadeType;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -35,8 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
     ,
      @NamedQuery(
             name = "buscarTrabajadorPorNombre", query = "SELECT t FROM trabajador t WHERE t.fullName LIKE :fullName"
-    ),
-})
+    ),})
 
 @Entity(name = "trabajador")
 @DiscriminatorValue("TRABAJADOR")
@@ -61,11 +61,12 @@ public class Trabajador extends Usuario implements Serializable {
     /**
      * Relacion 1:N con Piezas
      *
+     * Sin cascade el trabajador se borra es decir que no tiene nunguna relacion 
      */
-    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade = ALL)
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade = CascadeType.ALL)//Borra todas la pieza que ha creado el trabajador
     private Set<Pieza> piezas;
 
-    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade = ALL)
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER)////cascade = ALL
     private Set<Recoge> recoge;
 
     // @XmlTransient

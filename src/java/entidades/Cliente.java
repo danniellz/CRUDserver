@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,7 +15,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Clase de la entidad Cliente
@@ -39,7 +39,7 @@ public class Cliente extends Usuario implements Serializable {
     /**
      * Relacion de incidencias
      */
-    @OneToMany(mappedBy = "cliente",fetch= FetchType.EAGER)
+    @OneToMany(mappedBy = "cliente",fetch= FetchType.EAGER, cascade = CascadeType.ALL)//Con cascade borra todas la incidencias creadas
     private Set<Incidencia> incidencias;
 
     /**

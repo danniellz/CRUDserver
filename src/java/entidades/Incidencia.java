@@ -3,6 +3,7 @@ package entidades;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -65,7 +66,7 @@ public class Incidencia implements Serializable {
     @OneToMany(mappedBy = "incidencia", fetch = FetchType.EAGER)
     private Set<Recoge> recoge;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)//con cascade borra el cliente
     private Cliente cliente;
 
     @ManyToOne(fetch = FetchType.EAGER)

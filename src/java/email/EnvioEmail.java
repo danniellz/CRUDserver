@@ -1,7 +1,6 @@
 package email;
 
 import cripto.CifradoEmail;
-import cripto.CifradoSimetrico;
 import entidades.Usuario;
 import java.util.Properties;
 import java.util.Random;
@@ -50,7 +49,7 @@ public class EnvioEmail {
     private final int PORT;
 
     public EnvioEmail() {
-        CifradoSimetrico cifradoSimetrico = new CifradoSimetrico();
+        CifradoEmail cifradoSimetrico = new CifradoEmail();
         this.MAIL = cifradoSimetrico.descifrarEmailConClavePrivada();
         this.PASS = cifradoSimetrico.descifrarContraseñaConClavePrivada();
         this:HOST = RB.getString("HOST");
@@ -223,7 +222,7 @@ public class EnvioEmail {
     }
 
     //**********************MIKEL********************************************** 
-    public static void enviarMail(String receptor, String asunto, String cuerpo) throws AddressException, MessagingException {
+    /*  public static void enviarMail(String receptor, String asunto, String cuerpo) throws AddressException, MessagingException {
 
         //Propiedades del Mail
         Properties properties = new Properties();
@@ -239,7 +238,7 @@ public class EnvioEmail {
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(RB.getString("EMAIL"), CifradoEmail.descifrarTexto());
+                return new PasswordAuthentication(RB.getString("EMAIL"), CifradoEmail.descifrarEmailConClavePrivada());
             }
         });
 
@@ -267,5 +266,5 @@ public class EnvioEmail {
         Transport.send(msg);
 
     }
-
+     */
 }
