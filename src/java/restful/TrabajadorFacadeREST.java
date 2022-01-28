@@ -5,6 +5,8 @@
  */
 package restful;
 
+import cripto.Cripto;
+import cripto.Hash;
 import entidades.Trabajador;
 import excepciones.CreateException;
 import excepciones.DeleteException;
@@ -34,6 +36,11 @@ import javax.ws.rs.core.MediaType;
 @Path("entidades.trabajador")
 public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
 
+    /**
+     * Atributo estático y constante que guarda los loggers de esta clase.
+     */
+    private static final Logger LOGGER = Logger.getLogger("restful.TrabajadorFacadeREST");
+
     @PersistenceContext(unitName = "GESREServerPU")
     private EntityManager em;
 
@@ -45,6 +52,10 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Trabajador entity) {
+        // entity.setPassword(descifrarContrasena(entity.getPassword()));
+        // entity.setPassword(cifrarContrasena(descifrarContrasena(entity.getPassword())));
+        entity.setPassword(descifrarContrasena(entity.getPassword()));
+        entity.setPassword(cifrarContrasena(entity.getPassword()));
         try {
             super.create(entity);
         } catch (CreateException ex) {
@@ -53,12 +64,17 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     }
 
     @PUT
-    @Path("{id}")
+    @Override
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Integer id, Trabajador entity) {
+    public void edit(Trabajador entity) {
+        // entity.setPassword(Hash.cifradoSha(Hash.desencriptarContrasenia(entity.getPassword())));
+        entity.setPassword(descifrarContrasena(entity.getPassword()));
+        entity.setPassword(cifrarContrasena(entity.getPassword()));
         try {
+            LOGGER.info("TrabajadorFacadeREST: Editando trabajador");
             super.edit(entity);
         } catch (UpdateException ex) {
+            LOGGER.severe(ex.getMessage());
             Logger.getLogger(TrabajadorFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -78,15 +94,8 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public Trabajador find(@PathParam("id") Integer id) /*REVISAR*/ throws ReadException {
+    public Trabajador find(@PathParam("id") Integer id) throws ReadException {
         return super.find(id);
-    }
-
-    @GET
-    @Override
-    @Produces({MediaType.APPLICATION_XML})
-    public List<Trabajador> findAll()/*REVISAR*/ throws ReadException {
-        return super.findAll();
     }
 
     @Override
@@ -95,12 +104,27 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     }
 
     @GET
-    @Path("buscarTodosLosTrabajadores")
+    @Path("BuscarUnTrabajador/{fullName}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Trabajador> BuscarTodosLosTrabajadores() {
+    public List<Trabajador> buscarTrabajadorPorNombre(@PathParam("fullName") String fullName) throws ReadException {
+        List<Trabajador> trabajador = null;
+        try {
+            LOGGER.info("TrabajadorFacadeREST: Buscando trabajador por el nombre");
+            trabajador = em.createNamedQuery("buscarTrabajadorPorNombre").setParameter("fullName", fullName).getResultList();
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            throw new ReadException();
+        }
+        return trabajador;
+    }
+
+    @GET
+    @Path("BuscarTodosLosTrabajadores")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Trabajador> buscarTodosLosTrabajadores() {
         List<Trabajador> trabajadores = null;
         try {
-            trabajadores = em.createNamedQuery("buscarTodosLosTrabajadores").getResultList();
+            trabajadores = (List<Trabajador>) em.createNamedQuery("buscarTodosLosTrabajadores").getResultList();
         } catch (Exception ex) {
             System.out.println("error");
         }
@@ -108,14 +132,38 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     }
 
     @GET
-    @Path("trabajadoresSinIncidenciasPorId")
+    @Path("BuscarTrabajadoresSinIncidencias")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Trabajador> trabajadoresSinIncidenciasPorId() {
+    public List<Trabajador> buscarTrabajadoresSinIncidencias() {
         List<Trabajador> trabajadores = null;
         try {
-            trabajadores = (List<Trabajador>) em.createNamedQuery("trabajadoresSinIncidenciasPorId").getResultList();
+            trabajadores = (List<Trabajador>) em.createNamedQuery("buscarTrabajadoresSinIncidencias").getResultList();
         } catch (Exception e) {
         }
         return trabajadores;
+    }
+
+    /**
+     * Cifra la contraseña para guardarla en la base de datos.
+     *
+     * @param contrasena La contraseña del usuario.
+     * @return La contraseña cifrada.
+     */
+    private String cifrarContrasena(String contrasena) {
+        LOGGER.info("UsuarioFacadeREST: Cifrando contraseña");
+        Hash cifrarHash = new Hash();
+        return cifrarHash.cifrarTextoEnHash(contrasena);
+    }
+
+    /**
+     * Descifra la contraseña que le ha llegado del cliente.
+     *
+     * @param contrasena La contraseña cifrada del usuario.
+     * @return La contraseña descifrada.
+     */
+    private String descifrarContrasena(String contrasena) {
+        LOGGER.info("UsuarioFacadeREST: Descifrando contraseña");
+        return Hash.cifradoSha(contrasena);
+        
     }
 }

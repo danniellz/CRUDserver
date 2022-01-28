@@ -3,7 +3,7 @@ package entidades;
 /**
  * Clase que declara el estado del usuario.
  *
- * @author Jonathan Viñan
+ * @author Jonathan Viñan.
  */
 public enum UserStatus {
     /**

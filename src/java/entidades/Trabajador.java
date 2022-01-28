@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
-import static javax.persistence.CascadeType.ALL;
+import javax.persistence.CascadeType;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,7 +21,7 @@ import javax.xml.bind.annotation.XmlTransient;
 /**
  * Clase que define los atributos y los métodos de la entidad "Trabajador".
  *
- * @author Jonathan Viñan
+ * @author Jonathan Viñan.
  */
 //Coleccion de queries para realizar operaciones en la base de datos.
 @NamedQueries({
@@ -30,9 +31,12 @@ import javax.xml.bind.annotation.XmlTransient;
     )
     ,
     @NamedQuery(
-            name = "trabajadoresSinIncidenciasPorId", query = "SELECT t FROM trabajador t WHERE t.idUsuario  NOT IN (SELECT r.trabajador.idUsuario from Recoge r)"
+            name = "buscarTrabajadoresSinIncidencias", query = "SELECT t FROM trabajador t WHERE t.idUsuario  NOT IN (SELECT r.trabajador.idUsuario from Recoge r)"
     )
-})
+    ,
+     @NamedQuery(
+            name = "buscarTrabajadorPorNombre", query = "SELECT t FROM trabajador t WHERE t.fullName LIKE  CONCAT('%',:fullName,'%')"
+    ),})
 
 @Entity(name = "trabajador")
 @DiscriminatorValue("TRABAJADOR")
@@ -45,26 +49,27 @@ public class Trabajador extends Usuario implements Serializable {
      * Precio a las horas incurridas en el Trabajador
      */
     @NotNull
-    private Double precioHora;
+    private Integer precioHora;
 
     /**
      * Fecha del contrato del Trabajador
      */
     @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date fechaContrato;
 
     /**
      * Relacion 1:N con Piezas
      *
+     * Sin cascade el trabajador se borra es decir que no tiene nunguna relacion
      */
-    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade=ALL)
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade = CascadeType.ALL)//Borra todas la pieza que ha creado el trabajador
     private Set<Pieza> piezas;
 
-    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER, cascade=ALL)
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.EAGER)////cascade = ALL
     private Set<Recoge> recoge;
 
-    // @XmlTransient
+    //@XmlTransient
     public Set<Recoge> getRecoge() {
         return recoge;
     }
@@ -78,7 +83,7 @@ public class Trabajador extends Usuario implements Serializable {
      *
      * @return
      */
-    public Double getPrecioHora() {
+    public Integer getPrecioHora() {
         return precioHora;
     }
 
@@ -87,7 +92,7 @@ public class Trabajador extends Usuario implements Serializable {
      *
      * @param precioHora
      */
-    public void setPrecioHora(Double precioHora) {
+    public void setPrecioHora(Integer precioHora) {
         this.precioHora = precioHora;
     }
 
@@ -114,7 +119,7 @@ public class Trabajador extends Usuario implements Serializable {
      *
      * @return las piezas de la colección
      */
-    //@XmlTransient
+    @XmlTransient
     public Set<Pieza> getPiezas() {
         return piezas;
     }

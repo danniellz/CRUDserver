@@ -3,7 +3,7 @@ package entidades;
 /**
  * Clase enumeracion que determina el tipo de incidencia
  *
- * @author Daniel Brizuela
+ * @author Daniel Brizuela.
  */
 public enum TipoIncidencia {
     ELECTRICO,

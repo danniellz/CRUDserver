@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 /**
  * Clase que contiene las IDs de la entidad Recoge
  *
- * @author Aritz Arrieta
+ * @author Aritz Arrieta.
  */
 @Embeddable
 public class RecogeId implements Serializable {

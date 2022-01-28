@@ -3,7 +3,7 @@ package entidades;
 /**
  * Clase que declara el privilegio del usuario.
  *
- * @author Jonathan Viñan
+ * @author Jonathan Viñan.
  */
 public enum UserPrivilege {
 

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
-import static java.util.logging.Level.ALL;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
@@ -32,13 +31,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Jonathan Viañan y Aritz Arrieta
  */
 @NamedQueries({
-    @NamedQuery(name = "buscarUser", query = "SELECT u FROM Usuario u WHERE u.login LIKE:login")
+    @NamedQuery(name = "buscarUserPorLogin", query = "SELECT u FROM Usuario u WHERE u.login LIKE:login")
     ,
-    @NamedQuery(name = "todoLosUsuarios", query = "SELECT u FROM Usuario u")
+    @NamedQuery(name = "buscarTodoLosUsuarios", query = "SELECT u FROM Usuario u")
     ,
-    @NamedQuery(name = "iniciarSesionConLoginYPassword", query = "SELECT u FROM Usuario u WHERE u.login LIKE:login and u.password LIKE:password")
+    @NamedQuery(name = "buscarUsuarioConLoginYPassword", query = "SELECT u FROM Usuario u WHERE u.login LIKE:login and u.password LIKE:password")
     ,
-    @NamedQuery(name = "buscarUsuarioPorEmail", query = "SELECT u FROM Usuario u WHERE u.email LIKE :correo")
+    @NamedQuery(name = "buscarUsuarioPorEmail", query = "SELECT u FROM Usuario u WHERE u.email LIKE :email"),
 
 })
 
@@ -332,6 +331,10 @@ public class Usuario implements Serializable {
     @Override
     public String toString() {
         return "Usuario{" + "idUsuario=" + idUsuario + ", login=" + login + ", email=" + email + ", fullName=" + fullName + ", status=" + status + ", privilege=" + privilege + ", password=" + password + ", lastPasswordChange=" + lastPasswordChange + '}';
+    }
+
+    public boolean isEmpty() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

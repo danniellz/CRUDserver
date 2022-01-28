@@ -1,10 +1,24 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package cripto;
 
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 /**
  * Clase de Cifrado
@@ -22,81 +36,46 @@ public class Cripto {
     private static final ResourceBundle RB = ResourceBundle.getBundle("archivos.rutas");
     private final static String PUBLIC_KEY = RB.getString("PUBLIC_KEY");
     private final static String PRIVATE_KEY = RB.getString("PRIVATE_KEY");
+    private final static String PRIVATE_KEY_PATH = ResourceBundle.getBundle("/archivos.rutas").getString("PRIVATE_KEY");
 
-    /**
-     * Metodo para cifrar la contraseña
-     *
-     * @param contra contraseña
-     * @throws Exception
-     */
-    public byte[] cifrar(String contra) throws Exception {
-        LOG.info("GESREserver/Cripto: Cifrando contraseña...");
-        //Modo de cifrado, Crea una instancia del objeto Cipher como un cifrado RSA con el modo de operación ECB y el esquema de relleno
-        cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-        //Keys a utilizar
-        RSAPublicKey pubKey = (RSAPublicKey) PublicKeyReader.get();
-       // RSAPrivateKey privKey = (RSAPrivateKey) PrivateKeyReader.get();
-        //Iniciar Cipher en modo Encriptacion con clave publica
-        cipher.init(Cipher.ENCRYPT_MODE, pubKey);
-        //Cifrar
-       byte[] cipherText = cipher.doFinal(contra.getBytes());
-        // Mostrar Cifrado
-        System.out.println("Contraseña Cifrada: " +new String(cipherText));
-        return  cipherText;
 
-    }
+    public  String descifrarConClavePrivada(String contraseñaHexadecimal) {
+        byte[] decodedMessage = null;
+        try {
+            LOG.info("CifradoAsimetrico: Descifrando con clave privada");
 
-    /**
-     * Metodo para descifrar la contraseña
-     *
-     * @param contraHex contraseña con hash
-     * @throws Exception
-     * @return 
-     */
-    public byte[] descifrar(byte[] contra) throws Exception {
-        LOG.info("GESREserver/Cripto: CLASE CRIPTO ***** Descifrando contraseña...");
-        cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-       
-        RSAPrivateKey privKey = (RSAPrivateKey) PrivateKeyReader.get();
-        LOG.info("USO esto **************KEY");
-        // Iniciar descifrado con la clave privada 
-        cipher.init(Cipher.DECRYPT_MODE, privKey);
-            LOG.info("Desencripto?????????????????????????????????????");
-        byte[] contraDescifrada = cipher.doFinal(contra);
-         
-        System.out.println("Contraseña Descifrada: " + new String(contraDescifrada));
-        return contraDescifrada;
-    }
-    
-    /**
-     * Metodo que convierte un array de bytes en un string hexadecimal.
-     *
-     * @param bytes Array de bytes
-     * @return devuelve un String hexadecimal
-     */
-    /*
-    private String byteToHexadecimal(byte[] bytes) {
-        LOG.info("CifradoAsimetrico: Convirtiendo bytes a hexadecimal");
+            byte fileKey[] = getFileKey(PRIVATE_KEY_PATH);
 
-        String HEX = "";
-        for (int i = 0; i < bytes.length; i++) {
-            String h = Integer.toHexString(bytes[i] & 0xFF);
-            if (h.length() == 1) {
-                HEX += "0";
-            }
-            HEX += h;
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PKCS8EncodedKeySpec pKCS8EncodedKeySpec = new PKCS8EncodedKeySpec(fileKey);
+            PrivateKey privateKey = keyFactory.generatePrivate(pKCS8EncodedKeySpec);
+            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            decodedMessage = cipher.doFinal(HexadecimalToByte(contraseñaHexadecimal));
+
+        } catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
+            LOG.severe(e.getMessage());
         }
-        return HEX.toUpperCase();
+        return new String(decodedMessage);
     }
 
-    /**
-     * Metodo que convierte un string con valor hexadecimal a un array de bytes.
-     *
-     * @param hexadecimal string hexadecimal
-     * @return devuelve un array de bytes
-     */
-   /* private byte[] HexadecimalToByte(String hexadecimal) {
+    public byte[] getFileKey(String keyFilePath) {
+        byte[] keyBytes = null;
+        try {
+            LOG.info("CifradoAsimetrico: Leyendo archivo");
+
+            InputStream inputStream = Cripto.class.getResourceAsStream(keyFilePath);
+            keyBytes = new byte[inputStream.available()];
+            inputStream.read(keyBytes);
+        } catch (IOException ex) {
+            LOG.severe(ex.getMessage());
+        }
+        return keyBytes;
+    }
+
+    private byte[] HexadecimalToByte(String hexadecimal) {
         LOG.info("CifradoAsimetrico: Convirtiendo hexadecimal a bytes");
+
         int length = hexadecimal.length();
         byte[] data = new byte[length / 2];
         for (int i = 0; i < length; i += 2) {
@@ -104,5 +83,6 @@ public class Cripto {
                     + Character.digit(hexadecimal.charAt(i + 1), 16));
         }
         return data;
-    }*/
+    }
+
 }
