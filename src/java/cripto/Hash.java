@@ -17,7 +17,7 @@ import javax.xml.bind.DatatypeConverter;
  * Clase de cifrado hash con algoritmo SHA-1, cifra la contraseña y se guarda en
  * la base de datos
  *
- * @author Daniel Brizuela y Jonathan Viñan
+ * @author Daniel Brizuela, Aritz Arrieta, Jonathan Viñan
  */
 public class Hash {
 

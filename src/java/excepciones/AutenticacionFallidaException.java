@@ -7,7 +7,7 @@ package excepciones;
 
 /**
  *
- * @author JonY
+ * @author Jonathan Viñan
  */
 public class AutenticacionFallidaException extends Exception {
 

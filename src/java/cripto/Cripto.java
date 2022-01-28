@@ -23,7 +23,7 @@ import javax.crypto.NoSuchPaddingException;
 /**
  * Clase de Cifrado
  *
- * @author Daniel Brizuela, Aritz Arrieta
+ * @author Daniel Brizuela, Aritz Arrieta, Jonathan Viñan
  */
 public class Cripto {
 

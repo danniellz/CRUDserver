@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlTransient;
 /**
  * Clase que declara el estado SignIn del usuario
  *
- * @author Jonathan Viñan.
+ * @author  Aritz Arrieta, Jonathan Viñan
  */
 @Entity
 @Table(name = "signIn", schema = "gesredb")

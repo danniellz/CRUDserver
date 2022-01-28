@@ -19,7 +19,7 @@ import javax.crypto.Cipher;
 /**
  * Clase que genera las key publica y privada
  *
- * @author Daniel Brizuela, Aritz Arrieta
+ * @author Daniel Brizuela, Aritz Arrieta, Jonathan Viñan
  */
 public class KeyGenerator {
 

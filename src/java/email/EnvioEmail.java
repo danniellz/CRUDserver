@@ -22,7 +22,7 @@ import javax.mail.internet.MimeMultipart;
 /**
  * Clase para enviar un mail
  *
- * @author Daniel Brizuela, Mikel Matilla
+ * @author Daniel Brizuela, Mikel Matilla, Jonathan Viñan
  */
 public class EnvioEmail {
 
