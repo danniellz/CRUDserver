@@ -11,12 +11,14 @@ import entidades.Trabajador;
 import excepciones.CreateException;
 import excepciones.DeleteException;
 import excepciones.ReadException;
+import excepciones.TrabajadorNoExisteException;
 import excepciones.UpdateException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -106,14 +108,14 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     @GET
     @Path("BuscarUnTrabajador/{fullName}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Trabajador> buscarTrabajadorPorNombre(@PathParam("fullName") String fullName) throws ReadException {
+    public List<Trabajador> buscarTrabajadorPorNombre(@PathParam("fullName") String fullName) throws TrabajadorNoExisteException{
         List<Trabajador> trabajador = null;
         try {
             LOGGER.info("TrabajadorFacadeREST: Buscando trabajador por el nombre");
             trabajador = em.createNamedQuery("buscarTrabajadorPorNombre").setParameter("fullName", fullName).getResultList();
-        } catch (Exception e) {
+        } catch (NoResultException e) {
             LOGGER.severe(e.getMessage());
-            throw new ReadException();
+            throw new TrabajadorNoExisteException();
         }
         return trabajador;
     }
