@@ -27,7 +27,9 @@ import javax.mail.internet.MimeMultipart;
 public class EnvioEmail {
     
     private static final ResourceBundle RB = ResourceBundle.getBundle("archivos.email");
-
+    
+    private static final String[] credentials = CifradoEmail.descifrarTexto();
+    
     /**
      * Metodo para enviar email con el reset y cambio de contraseña
      * 
@@ -53,13 +55,13 @@ public class EnvioEmail {
         Session session = Session.getInstance(properties, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(RB.getString("EMAIL"), CifradoEmail.descifrarTexto());
+                return new PasswordAuthentication(credentials[0], credentials[1]);
             }
         });
         
         //Preparar mensaje
         Message msg = new MimeMessage(session);
-        msg.setFrom(new InternetAddress(RB.getString("EMAIL")));
+        msg.setFrom(new InternetAddress(credentials[0]));
         msg.setRecipient(Message.RecipientType.TO, new InternetAddress(receptor));
 
         msg.setSubject(asunto);

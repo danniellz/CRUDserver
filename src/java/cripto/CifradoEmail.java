@@ -8,8 +8,10 @@ package cripto;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.security.spec.KeySpec;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.crypto.Cipher;
@@ -49,6 +51,7 @@ public class CifradoEmail{
     private static byte[] salt = "esta es la salt!".getBytes();
     
     private static final ResourceBundle RBC = ResourceBundle.getBundle("archivos.symmetricalPrivateKey");
+    private static final ResourceBundle RB = ResourceBundle.getBundle("archivos.emailCript");
 
     private static String clave = RBC.getString("KEY");
     
@@ -59,13 +62,16 @@ public class CifradoEmail{
      * @param contra
      * @return Mensaje cifrado
      */
-    public String cifrarTexto(String contra) {
+    public static void cifrarTexto(String email, String contra) {
         String ret = null;
         KeySpec keySpec = null;
         SecretKeyFactory secretKeyFactory = null;
         //String clave = RBC.getString("KEY");
         try {
-
+            OutputStream output = new FileOutputStream("src/java/archivos/emailCript.properties");
+            
+            Properties prop = new Properties();
+            
             // Creamos un SecretKey usando la clave + salt
             keySpec = new PBEKeySpec(clave.toCharArray(), salt, 65536, 128); // AES-128
             secretKeyFactory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
@@ -75,20 +81,20 @@ public class CifradoEmail{
             // Creamos un Cipher con el algoritmos que vamos a usar
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-            byte[] encodedMessage = cipher.doFinal(contra.getBytes()); // Mensaje cifrado !!!
-        
+            byte[] encodedEmail = cipher.doFinal(email.getBytes());
+            byte[] encodedPass = cipher.doFinal(contra.getBytes());
 
-            // Guardamos el mensaje codificado: IV (16 bytes) + Mensaje
-            byte[] combined = encodedMessage;
+            //fileWriter(".\\src\\java\\archivos\\PassCifrada.dat", combined);
 
-            fileWriter(".\\src\\java\\archivos\\PassCifrada.dat", combined);
+            
+            prop.setProperty("EMAIL", byteArrayToHexString(encodedEmail));
+            prop.setProperty("PASS", byteArrayToHexString(encodedPass));
 
-            ret = new String(encodedMessage);
-
+            prop.store(output, null);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ret;
     }
 
     /**
@@ -98,11 +104,14 @@ public class CifradoEmail{
      * @param clave La clave del usuario
      * @return 
      */
-    public static String descifrarTexto() {
-        String ret = null;
+    public static String[] descifrarTexto() {
+        String[] ret = null;
         
         // Fichero leído
-        byte[] fileContent = fileReader(".\\src\\java\\archivos\\PassCifrada.dat");
+        //byte[] fileContent = fileReader(".\\src\\java\\archivos\\PassCifrada.dat");
+        
+        byte[] emailContent = hexStringToByteArray(RB.getString("EMAIL"));
+        byte[] passContent = hexStringToByteArray(RB.getString("PASS"));
         KeySpec keySpec = null;
         SecretKeyFactory secretKeyFactory = null;
         try {
@@ -115,8 +124,9 @@ public class CifradoEmail{
             // Creamos un Cipher con el algoritmos que vamos a usar
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            byte[] decodedMessage = cipher.doFinal(fileContent);
-            ret = new String(decodedMessage);
+            byte[] decodedEmail = cipher.doFinal(emailContent);
+            byte[] decodedPass = cipher.doFinal(passContent);
+            ret = new String[]{new String(decodedEmail),new String(decodedPass)};
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -153,14 +163,31 @@ public class CifradoEmail{
         }
         return ret;
     }
+    
+    public static String byteArrayToHexString(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02x", b));
+        }
+        return sb.toString();
+    }
+    
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i + 1), 16));
+        }
+        return data;
+    }
 
     public static void main(String[] args) {
+        String email = "gesre.empresa@gmail.com";
         String contra = "abcd*1234";
-        CifradoEmail cifradoEmail = new CifradoEmail();
-        String mensajeCifrado = cifradoEmail.cifrarTexto(contra);
-        System.out.println("Cifrado! -> " + mensajeCifrado);
-        System.out.println("-----------");
-        System.out.println("Descifrado! -> " + cifradoEmail.descifrarTexto());
-        System.out.println("-----------");
+        //CifradoEmail.cifrarTexto(email, contra);
+        String[] credentials = CifradoEmail.descifrarTexto();
+        System.out.println("Correo: " + credentials[0]);
+        System.out.println("Contra: " + credentials[1]);
     }
 }
