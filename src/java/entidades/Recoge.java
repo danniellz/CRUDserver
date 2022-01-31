@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.Objects;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.Table;
@@ -18,7 +17,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Clase que almacena el trabajador y la incidencia que ha escogido
- * 
+ *
  * @author Aritz Arrieta
  */
 @Entity
@@ -33,10 +32,10 @@ public class Recoge implements Serializable {
     private RecogeId idRecoge;
 
     @MapsId("idUsuario")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne//(fetch = FetchType.EAGER, cascade = (CascadeType.ALL))
     private Trabajador trabajador;
     @MapsId("incidenciaId")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne//(fetch = FetchType.EAGER, cascade = (CascadeType.ALL))
     private Incidencia incidencia;
 
     @NotNull
@@ -140,7 +139,7 @@ public class Recoge implements Serializable {
 
     /**
      * Hashcode
-     * 
+     *
      * @return devuelve el hashcode
      */
     @Override

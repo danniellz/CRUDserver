@@ -102,7 +102,7 @@ public class RecogeFacadeREST extends AbstractFacade<Recoge> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Recoge find(@PathParam("id") PathSegment id) /*REVISAR*/throws ReadException {
+    public Recoge find(@PathParam("id") PathSegment id) /*REVISAR*/ throws ReadException {
         entidades.RecogeId key = getPrimaryKey(id);
         return super.find(key);
     }

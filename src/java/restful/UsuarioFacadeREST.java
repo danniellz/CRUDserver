@@ -7,11 +7,12 @@ package restful;
 
 import cripto.Cripto;
 import cripto.Hash;
+import static cripto.Hash.desencriptarContrasenia;
 import email.EnvioEmail;
 import entidades.Usuario;
 import excepciones.*;
+import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -36,7 +37,7 @@ import javax.ws.rs.core.MediaType;
 @Path("entidades.usuario")
 public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
 
-    private static final Logger LOG = Logger.getLogger("restful.UsuarioFacadeREST");
+    private static final Logger LOGGER = Logger.getLogger("restful.UsuarioFacadeREST");
 
     @PersistenceContext(unitName = "GESREServerPU")
     private EntityManager em;
@@ -49,19 +50,23 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Usuario entity) {
+
+        //entity.setPassword(cifrarContrasena(descifrarContrasena(entity.getPassword())));
+        entity.setPassword(descifrarContrasena(entity.getPassword()));
+        entity.setPassword(cifrarContrasena(entity.getPassword()));
         try {
-            LOG.info("UsuarioFacadeREST: Creando usuario");
+            LOGGER.info("UsuarioFacadeREST: Creando usuario");
             super.create(entity);
         } catch (CreateException e) {
-            LOG.severe(e.getMessage());
+            LOGGER.severe(e.getMessage());
             throw new InternalServerErrorException(e.getMessage());
         }
     }
 
     @PUT
-    @Path("{id}")
+    @Override
     @Consumes({MediaType.APPLICATION_XML})
-    public void edit(@PathParam("id") Integer id, Usuario entity) {
+    public void edit(Usuario entity) {
         try {
             super.edit(entity);
         } catch (UpdateException ex) {
@@ -84,27 +89,27 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
-    public Usuario find(@PathParam("id") Integer id)/*REVISAR*/ throws ReadException {
+    public Usuario find(@PathParam("id") Integer id) throws ReadException {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML})
-    public List<Usuario> findAll() /*REVISAR*/ throws ReadException {
+    public List<Usuario> findAll() throws ReadException {
         return super.findAll();
     }
 
+    //FUNCIONA
     @GET
-    @Path("login/{login}")
+    @Path("Login/{login}")
     @Produces({MediaType.APPLICATION_XML})
-    public Usuario findUserByLogin(@PathParam("login") String login) {
-        Usuario usuarios = null;
+    public List<Usuario> buscarUserPorLogin(@PathParam("login") String login) {
+        List<Usuario> usuarios = null;
         try {
-
-            usuarios = (Usuario) em.createNamedQuery("buscarUser")
+            usuarios = em.createNamedQuery("buscarUserPorLogin")
                     .setParameter("login", login)
-                    .getSingleResult();
+                    .getResultList();
 
         } catch (Exception e) {
             throw new InternalServerErrorException(e);
@@ -112,36 +117,152 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
         return usuarios;
     }
 
+    //FUNCIONA
     @GET
-    @Path("nuevaContrasenia/{email}")
+    @Path("Email/{email}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Usuario> buscarUsuarioPorEmail(@PathParam("email") String email) throws ReadException {
+        List<Usuario> usuario = null;
+        try {
+            usuario = (List<Usuario>) em.createNamedQuery("buscarUsuarioPorEmail").setParameter("email", email).getResultList();
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            throw new ReadException(e.getMessage());
+        }
+        return usuario;
+    }
+
+    //FUNCIONA
+    @GET
+    @Path("Login y Password/{login},{password}")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Usuario> buscarUsuarioPorLoginYContrasenia(@PathParam("login") String login, @PathParam("password") String password) throws Exception {
+        LOGGER.info("*********DESIFRANDO CONTRASEÑA*****");
+
+        String contraseCifrada = Hash.cifradoSha(Hash.desencriptarContrasenia(password));
+
+        List< Usuario> usuario = null;
+        try {
+
+            LOGGER.severe("Contraseña cifrada  " + contraseCifrada);
+            usuario = em.createNamedQuery("buscarUsuarioConLoginYPassword")
+                    .setParameter("login", login)
+                    .setParameter("password", password)
+                    .getResultList();
+            for (Usuario usuario1 : usuario) {
+                if (!usuario1.getPassword().equals(contraseCifrada)) {
+                    LOGGER.severe("Contraseña incorrecta ");
+                    throw new AutenticacionFallidaException();
+                }
+            }
+        } catch (Exception e) {
+        }
+        return usuario;
+    }
+
+    /**
+     * FALTA PROBAR SI ENVIA EMAIL CORRECTAMENTE Método que busca un usuario por
+     * su email para enviar el mail de recuperación de contraseña.
+     *
+     * @param usuario el usuario que se buscará.
+     */
+    @POST
+    @Path("Enviar Mail Recuperacion")
+    @Consumes({MediaType.APPLICATION_XML})
+    public void buscarUsuarioParaEnviarMailRecuperarContrasenia(Usuario usuario) throws ReadException {
+        try {
+            LOGGER.info("UsuarioFacadeREST: Buscando usuario por email para enviar mail de recuperación de contraseña");
+            Collection<Usuario> usuarioEmails = getEntityManager().createNamedQuery("buscarUsuarioPorEmail").setParameter("email", usuario.getEmail()).getResultList();
+            if (!usuarioEmails.isEmpty()) {
+                String newPassword = EnvioEmail.enviarMailRecuperarContrasenia(usuario);
+                Hash cifradoHash = new Hash();
+                newPassword = cifradoHash.cifrarTextoEnHash(newPassword);
+
+                for (Usuario user : usuarioEmails) {
+                    user.setPassword(newPassword);
+                }
+            }
+        } catch (Exception e) {
+            throw new ReadException(e.getMessage());
+        }
+    }
+
+    /**
+     * FALTA PROBAR SI ENVIA EMAIL CORRECTAMENTE
+     *
+     * Método que busca un usuario por su email para enviar el mail de cambio de
+     * contraseña.
+     *
+     * @param email el email que se buscará.
+     */
+    @POST
+    @Path("enviarMailCambio")
+    @Consumes({MediaType.APPLICATION_XML})
+    public void buscarEmailParaEnviarMailCambiarContrasenia(String email) throws ReadException {
+        try {
+            LOGGER.info("UsuarioFacadeREST: Buscando email para enviar mail de cambio de contraseña");
+            getEntityManager().createNamedQuery("buscarUsuarioPorEmail").setParameter("email", email).getResultList();
+            EnvioEmail.enviarMailCambiarContrasenia(email);
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            throw new ReadException(e.getMessage());
+        }
+    }
+
+    @GET
+    @Path("Todos los usuarios")
+    @Produces({MediaType.APPLICATION_XML})
+    public List<Usuario> buscarTodosLosUsuarios() {
+        List<Usuario> usuarios = null;
+        try {
+            usuarios = (List<Usuario>) em.createNamedQuery("buscarTodoLosUsuarios").getResultList();
+        } catch (Exception ex) {
+            System.out.println("error");
+        }
+        return usuarios;
+    }
+
+    @GET
+    @Path("Nueva Contrasenia/{email}")
     @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByLogin(@PathParam("email") String email) {
         Usuario usuarios = null;
+
+        String nuevaContra = "1234";
         try {
-            usuarios = buscarEmail(email);
+            usuarios = buscarUsuarioPorEmailV2(email);
+
             if (usuarios.getLogin().isEmpty()) {
-
+                LOGGER.info("No existe el email");
             } else {
-                //generar nueva contraseña
-                Random rand = new Random(); //instance of random class
-
-                int int_random = rand.nextInt(99999999 - 00000000) + 99999999;
-                String nuevaContra = String.valueOf(int_random);
+                LOGGER.info("*************CAMBIANDO CONTRASEÑA***************+");
                 System.out.println(nuevaContra);
-                String contra = hasheado(nuevaContra);
-
+                String contra = (nuevaContra);
+                contra = Hash.cifradoSha(contra);
                 usuarios.setPassword(contra);
-                if (!em.contains(usuarios)) {
-                    em.merge(usuarios);
-                }
-                em.flush();
-                EnvioEmail.enviarMail(usuarios.getEmail(), "Reset de Contraseña", nuevaContra);
+                actualizar(usuarios);
+                LOGGER.info("************* CONTRASEÑA ACTUALIZADA***************+");
+                // EnvioEmail.enviarMail(usuarios.getEmail(), "Reset de Contraseña", nuevaContra);
+
             }
 
         } catch (Exception e) {
             throw new InternalServerErrorException(e);
         }
+    }
 
+    @GET
+    @Path("EmailV2/{email}")
+    @Produces({MediaType.APPLICATION_XML})
+    public Usuario buscarUsuarioPorEmailV2(@PathParam("email") String email) throws ReadException {
+        Usuario usuario = null;
+        try {
+            usuario = (Usuario) em.createNamedQuery("buscarUsuarioPorEmail").setParameter("email", email).getSingleResult();
+        } catch (Exception e) {
+            LOGGER.severe(e.getMessage());
+            throw new ReadException(e.getMessage());
+        }
+        return usuario;
     }
 
     @Override
@@ -149,85 +270,6 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
         return em;
     }
 
-    @GET
-    @Path("iniciarSesion/{login},{password}")
-    @Produces({MediaType.APPLICATION_XML})
-    public Usuario buscarUsuarioPorLoginYContrasenia(@PathParam("login") String login, @PathParam("password") String password) {
-        Usuario usuario;
-        try {
-            // password = descifrado(password);
-            byte[] contracifrada = cifrado(password);
-            LOG.info("*******************************************************Contraseña Cifrada: " + new String(contracifrada));
-            byte[] contraDescifra = descifrado(contracifrada);
-            LOG.info("*****************************************************contraseña descifrada: " + password);
-            String contra = hasheado(new String(contraDescifra));
-            LOG.info("*****************************************************contraseña Hasheada: " + contra);
-
-            usuario = (Usuario) em.createNamedQuery("iniciarSesionConLoginYPassword").setParameter("login", login).setParameter("password", contra).getSingleResult();
-
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage());
-        }
-        return usuario;
-    }
-
-    @GET
-    @Path("buscarUsuarioPorEmail/{correo}")
-    @Produces({MediaType.APPLICATION_XML})
-    public Usuario buscarEmail(@PathParam("correo") String email) {
-        Usuario u;
-        try {
-            u = (Usuario) em.createNamedQuery("buscarUsuarioPorEmail").setParameter("correo", email).getSingleResult();
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage());
-        }
-        return u;
-    }
-
-    @GET
-    @Path("cambiarContrasenia/{login},{password}")
-    @Produces({MediaType.APPLICATION_XML})
-    public void cambiarContraseniaPorLogin(@PathParam("login") String login, @PathParam("password") String password) {
-        Usuario u = null;
-        Usuario x = null;
-        String asunto = "Contraseña Actualizada";
-        String cuerpo = "Contraseña actualizada correctamente.";
-        try {
-            u = findUserByLogin(login);
-            if (u.getLogin().isEmpty()) {
-
-            } else {
-                u.setPassword(password);
-                actualizar(u);
-            }
-            EnvioEmail.enviarMail(u.getEmail(), asunto, cuerpo);
-
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage());
-        }
-
-    }
-
-    /*@GET
-    @Path("cambiarContraseniaPorEmail/{correo},{password}")
-    @Produces({MediaType.APPLICATION_XML})
-    public void cambiarContraseniaPoreEmail(@PathParam("correo") String email, @PathParam("password") String password) {
-        Usuario u = null;
-      
-        try {
-            u = buscarEmail(email);
-            if (u.getLogin().isEmpty()) {
-
-            } else {
-                u.setPassword(password);
-                actualizar(u);
-            }
-
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage());
-        }
-
-    }*/
     public void actualizar(Usuario usuario) {
         try {
             if (!em.contains(usuario)) {
@@ -240,31 +282,28 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
         }
     }
 
-    private byte[] cifrado(String contra) {
-        Cripto cripto = new Cripto();
-        byte[] contraCifrada = null;
-        try {
-            contraCifrada = cripto.cifrar(contra);
-        } catch (Exception ex) {
-            Logger.getLogger(UsuarioFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return contraCifrada;
-
+    /**
+     * Cifra la contraseña para guardarla en la base de datos.
+     *
+     * @param contrasena La contraseña del usuario.
+     * @return La contraseña cifrada.
+     */
+    private String cifrarContrasena(String contrasena) {
+        LOGGER.info("UsuarioFacadeREST: Cifrando contraseña");
+        Hash cifrarHash = new Hash();
+        return cifrarHash.cifrarTextoEnHash(contrasena);
     }
 
-    private byte[] descifrado(byte[] contra) throws Exception {
-        Cripto cripto = new Cripto();
-        byte[] contraDescifrada = null;
-        contraDescifrada = cripto.descifrar(contra);
-
-        return contraDescifrada;
-    }
-
-    private String hasheado(String contra) throws Exception {
-        Hash hasheado = new Hash();
-        String cifrarTextoEnHash = hasheado.cifrarTextoEnHash(contra);
-
-        return cifrarTextoEnHash;
+    /**
+     * Descifra la contraseña que le ha llegado del cliente.
+     *
+     * @param contrasena La contraseña cifrada del usuario.
+     * @return La contraseña descifrada.
+     */
+    private String descifrarContrasena(String contrasena) {
+        LOGGER.info("UsuarioFacadeREST: Descifrando contraseña");
+        Hash descifrarAsimetrico = new Hash();
+        return descifrarAsimetrico.desencriptarContrasenia(contrasena);
     }
 
 }
