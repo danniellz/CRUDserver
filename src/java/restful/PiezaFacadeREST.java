@@ -3,6 +3,7 @@ package restful;
 import entidades.Pieza;
 import excepciones.CreateException;
 import excepciones.DeleteException;
+import excepciones.PiezaExisteException;
 import excepciones.ReadException;
 import excepciones.UpdateException;
 import java.util.List;
@@ -52,10 +53,21 @@ public class PiezaFacadeREST extends AbstractFacade<Pieza> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Pieza entity) {
+        List<Pieza> piezas;
         try {
-            super.create(entity);
+            piezas = findAllPiezaByName(entity.getNombre());
+            if(piezas.isEmpty()){
+                LOG.info("La pieza no existe, el proceso de creación puede continuar");
+                super.create(entity);
+            }else{
+                throw new PiezaExisteException();
+            }
         } catch (CreateException ex) {
             Logger.getLogger(PiezaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ReadException ex) {
+            Logger.getLogger(PiezaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (PiezaExisteException ex) {
+            LOG.severe(ex.getMessage());
         }
     }
 
