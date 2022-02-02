@@ -5,6 +5,7 @@
  */
 package restful;
 
+import cripto.Hash;
 import entidades.Cliente;
 import excepciones.CreateException;
 import excepciones.DeleteException;
@@ -48,6 +49,8 @@ public class ClienteFacadeREST extends AbstractFacade<Cliente> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Cliente entity) {
+         entity.setPassword(descifrarContrasena(entity.getPassword()));
+        entity.setPassword(cifrarContrasena(entity.getPassword()));
         try {
             LOG.info("Creando Cliente");
             super.create(entity);
@@ -140,6 +143,30 @@ public class ClienteFacadeREST extends AbstractFacade<Cliente> {
                 throw new ReadException(e.getMessage());
         }
         return clientes;
+    }
+    
+      /**
+     * Cifra la contraseña para guardarla en la base de datos.
+     *
+     * @param contrasena La contraseña del usuario.
+     * @return La contraseña cifrada.
+     */
+    private String cifrarContrasena(String contrasena) {
+        LOG.info("UsuarioFacadeREST: Cifrando contraseña");
+        Hash cifrarHash = new Hash();
+        return cifrarHash.cifrarTextoEnHash(contrasena);
+    }
+
+    /**
+     * Descifra la contraseña que le ha llegado del cliente.
+     *
+     * @param contrasena La contraseña cifrada del usuario.
+     * @return La contraseña descifrada.
+     */
+    private String descifrarContrasena(String contrasena) {
+        LOG.info("UsuarioFacadeREST: Descifrando contraseña");
+        return Hash.cifradoSha(contrasena);
+        
     }
 
 }
