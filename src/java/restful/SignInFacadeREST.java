@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author Jonathan Viñan
+ * @author  Aritz Arrieta, Jonathan Viñan
  */
 @Stateless
 @Path("entidades.signin")

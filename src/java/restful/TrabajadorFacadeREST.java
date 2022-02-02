@@ -54,8 +54,6 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Trabajador entity) {
-        // entity.setPassword(descifrarContrasena(entity.getPassword()));
-        // entity.setPassword(cifrarContrasena(descifrarContrasena(entity.getPassword())));
         entity.setPassword(descifrarContrasena(entity.getPassword()));
         entity.setPassword(cifrarContrasena(entity.getPassword()));
         try {

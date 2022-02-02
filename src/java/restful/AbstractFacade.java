@@ -43,7 +43,11 @@ public abstract class AbstractFacade<T> {
     public void create(T entity) throws CreateException {
         try {
             LOG.info("GESREserver/AbstractFacade: Creando nuevo elemento en '" + entity.toString() + "'");
-            getEntityManager().persist(entity);
+            //getEntityManager().persist(entity);
+            if (!getEntityManager().contains(entity)) {
+                getEntityManager().merge(entity);
+            }
+            getEntityManager().flush();
         } catch (Exception e) {
             throw new CreateException(e.getMessage());
         }
