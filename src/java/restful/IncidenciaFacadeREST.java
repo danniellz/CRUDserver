@@ -46,7 +46,7 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     }
 
     /**
-     * 
+     *
      * @param entity
      */
     @POST
@@ -83,7 +83,7 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") Integer id) {
-       
+
         try {
             super.remove(super.find(id));
         } catch (ReadException ex) {
@@ -91,7 +91,7 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
         } catch (DeleteException ex) {
             Logger.getLogger(IncidenciaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
         }
-       
+
     }
 
     /**
@@ -103,9 +103,9 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML})
     public Incidencia find(@PathParam("id") Integer id) throws ReadException {
-       
-            return super.find(id);
-      
+
+        return super.find(id);
+
     }
     //findIncidenciaDeUnTrabajador
 
@@ -118,24 +118,23 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     @GET
     @Path("/InciTrabajador/{idUsuario}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Incidencia>findIncidenciaDeUnTrabajador(@PathParam("idUsuario") Integer idUsuario) throws InternalServerErrorException{
-     List<Incidencia> incidencias=null;
-     try{
-         incidencias=em.createNamedQuery("findIncidenciaDeUnTrabajador")
-                 .setParameter("idUsuario", idUsuario)
-                 .getResultList();
-             
-     }catch(Exception e){
-         
-     throw new InternalServerErrorException(e);
-     
-     }
-    return incidencias;
-    
+    public List<Incidencia> findIncidenciaDeUnTrabajador(@PathParam("idUsuario") Integer idUsuario) throws InternalServerErrorException {
+        List<Incidencia> incidencias = null;
+        try {
+            incidencias = em.createNamedQuery("findIncidenciaDeUnTrabajador")
+                    .setParameter("idUsuario", idUsuario)
+                    .getResultList();
+
+        } catch (Exception e) {
+
+            throw new InternalServerErrorException(e);
+
+        }
+        return incidencias;
+
     }
 
-     //findIncidenciaDeUnUsuario
-
+    //findIncidenciaDeUnUsuario
     /**
      *
      * @param idUsuario
@@ -145,20 +144,20 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     @GET
     @Path("/InciUsuario/{idUsuario}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Incidencia>findIncidenciaDeUnUsuario(@PathParam("idUsuario") Integer idUsuario) throws InternalServerErrorException{
-     List<Incidencia> incidencias=null;
-     try{
-         incidencias=em.createNamedQuery("findIncidenciaDeUnUsuario")
-                 .setParameter("idUsuario", idUsuario)
-                 .getResultList();
-             
-     }catch(Exception e){
-         
-     throw new InternalServerErrorException(e);
-     
-     }
-    return incidencias;
-    
+    public List<Incidencia> findIncidenciaDeUnUsuario(@PathParam("idUsuario") Integer idUsuario) throws InternalServerErrorException {
+        List<Incidencia> incidencias = null;
+        try {
+            incidencias = em.createNamedQuery("findIncidenciaDeUnUsuario")
+                    .setParameter("idUsuario", idUsuario)
+                    .getResultList();
+
+        } catch (Exception e) {
+
+            throw new InternalServerErrorException(e);
+
+        }
+        return incidencias;
+
     }
     //findIncidenciaDeUnUsuarioCerrada
 
@@ -168,25 +167,25 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
      * @return
      * @throws InternalServerErrorException
      */
-      @GET
+    @GET
     @Path("/InciAcabadaUsuario/{idUsuario}")
     @Produces({MediaType.APPLICATION_XML})
-    public List<Incidencia>findIncidenciaAcabadaDeUnUsuario(@PathParam("idUsuario") Integer idUsuario) throws InternalServerErrorException{
-     List<Incidencia> incidencias=null;
-     try{
-         incidencias=em.createNamedQuery("findIncidenciaDeUnUsuarioAcabada")
-                 .setParameter("idUsuario", idUsuario)
-                 .getResultList();
-             
-     }catch(Exception e){
-         
-     throw new InternalServerErrorException(e);
-     
-     }
-    return incidencias;
-    
+    public List<Incidencia> findIncidenciaAcabadaDeUnUsuario(@PathParam("idUsuario") Integer idUsuario) throws InternalServerErrorException {
+        List<Incidencia> incidencias = null;
+        try {
+            incidencias = em.createNamedQuery("findIncidenciaDeUnUsuarioAcabada")
+                    .setParameter("idUsuario", idUsuario)
+                    .getResultList();
+
+        } catch (Exception e) {
+
+            throw new InternalServerErrorException(e);
+
+        }
+        return incidencias;
+
     }
-    
+
     /**
      *
      * @return
@@ -197,7 +196,7 @@ public class IncidenciaFacadeREST extends AbstractFacade<Incidencia> {
     public List<Incidencia> findAll()/*REVISAR*/ throws ReadException {
         return super.findAll();
     }
-   
+
     /**
      *
      * @return

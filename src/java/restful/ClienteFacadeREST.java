@@ -49,8 +49,8 @@ public class ClienteFacadeREST extends AbstractFacade<Cliente> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Cliente entity) {
-         entity.setPassword(descifrarContrasena(entity.getPassword()));
-        entity.setPassword(cifrarContrasena(entity.getPassword()));
+         entity.setPassword(Hash.cifradoSha(entity.getPassword()));
+     //   entity.setPassword(cifrarContrasena(entity.getPassword()));
         try {
             LOG.info("Creando Cliente");
             super.create(entity);

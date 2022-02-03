@@ -13,6 +13,7 @@ import entidades.Usuario;
 import excepciones.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -52,8 +53,8 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     public void create(Usuario entity) {
 
         //entity.setPassword(cifrarContrasena(descifrarContrasena(entity.getPassword())));
-        entity.setPassword(descifrarContrasena(entity.getPassword()));
-        entity.setPassword(cifrarContrasena(entity.getPassword()));
+      ///  entity.setPassword(descifrarContrasena(entity.getPassword()));
+        entity.setPassword(Hash.cifradoSha(entity.getPassword()));
         try {
             LOGGER.info("UsuarioFacadeREST: Creando usuario");
             super.create(entity);
@@ -139,7 +140,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     public List<Usuario> buscarUsuarioPorLoginYContrasenia(@PathParam("login") String login, @PathParam("password") String password) throws Exception {
         LOGGER.info("*********DESIFRANDO CONTRASEÑA*****");
 
-        String contraseCifrada = Hash.cifradoSha(Hash.desencriptarContrasenia(password));
+        String contraseCifrada = Hash.cifradoSha(password);
 
         List< Usuario> usuario = null;
         try {
@@ -147,7 +148,7 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
             LOGGER.severe("Contraseña cifrada  " + contraseCifrada);
             usuario = em.createNamedQuery("buscarUsuarioConLoginYPassword")
                     .setParameter("login", login)
-                    .setParameter("password", password)
+                    .setParameter("password", contraseCifrada)
                     .getResultList();
             for (Usuario usuario1 : usuario) {
                 if (!usuario1.getPassword().equals(contraseCifrada)) {
@@ -166,18 +167,18 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
      *
      * @param usuario el usuario que se buscará.
      */
-    @POST
-    @Path("Enviar Mail Recuperacion")
+    @GET
+    @Path("Enviar Mail Recuperacion/{email}")
     @Consumes({MediaType.APPLICATION_XML})
     public void buscarUsuarioParaEnviarMailRecuperarContrasenia(Usuario usuario) throws ReadException {
         try {
             LOGGER.info("UsuarioFacadeREST: Buscando usuario por email para enviar mail de recuperación de contraseña");
             Collection<Usuario> usuarioEmails = getEntityManager().createNamedQuery("buscarUsuarioPorEmail").setParameter("email", usuario.getEmail()).getResultList();
             if (!usuarioEmails.isEmpty()) {
-                String newPassword = EnvioEmail.enviarMailRecuperarContrasenia(usuario);
+                String newPassword = generarContrasenia();
+                EnvioEmail.enviarMail(usuario.getEmail(), "Recuperar Contraseña", newPassword);
                 Hash cifradoHash = new Hash();
                 newPassword = cifradoHash.cifrarTextoEnHash(newPassword);
-
                 for (Usuario user : usuarioEmails) {
                     user.setPassword(newPassword);
                 }
@@ -198,11 +199,21 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     @POST
     @Path("enviarMailCambio")
     @Consumes({MediaType.APPLICATION_XML})
-    public void buscarEmailParaEnviarMailCambiarContrasenia(String email) throws ReadException {
+    public void buscarEmailParaEnviarMailCambiarContrasenia(Usuario usuario) throws ReadException {
+        Collection<Usuario> usuarioEmails = getEntityManager().createNamedQuery("buscarUsuarioPorEmail").setParameter("email", usuario.getEmail()).getResultList();
+
         try {
             LOGGER.info("UsuarioFacadeREST: Buscando email para enviar mail de cambio de contraseña");
-            getEntityManager().createNamedQuery("buscarUsuarioPorEmail").setParameter("email", email).getResultList();
-            EnvioEmail.enviarMailCambiarContrasenia(email);
+            
+
+            String newPassword = generarContrasenia();
+            EnvioEmail.enviarMail(usuario.getEmail(), "Cambio de Contraseña actualizada", usuario.getPassword());
+            Hash cifradoHash = new Hash();
+            newPassword = cifradoHash.cifrarTextoEnHash(newPassword);
+
+            for (Usuario user : usuarioEmails) {
+                user.setPassword(newPassword);
+            }
         } catch (Exception e) {
             LOGGER.severe(e.getMessage());
             throw new ReadException(e.getMessage());
@@ -304,6 +315,21 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
         LOGGER.info("UsuarioFacadeREST: Descifrando contraseña");
         Hash descifrarAsimetrico = new Hash();
         return descifrarAsimetrico.desencriptarContrasenia(contrasena);
+    }
+
+    public String generarContrasenia() {
+        int leftLimit = 48; //Número '0'
+        int rightLimit = 122; //Letra 'Z'
+        int tamanioMax = 10;
+        Random random = new Random();
+
+        String nuevaContrasenia = random.ints(leftLimit, rightLimit + 1)
+                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97)) //(0-9) || (A-Z) && (a-z)
+                .limit(tamanioMax)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        return nuevaContrasenia;
     }
 
 }

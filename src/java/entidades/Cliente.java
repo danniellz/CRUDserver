@@ -15,6 +15,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * Clase de la entidad Cliente
@@ -64,7 +65,7 @@ public class Cliente extends Usuario implements Serializable {
      *
      * @param incidencias Incidencias
      */
-   //@XmlTransient
+   @XmlTransient
     public void setIncidencias(Set<Incidencia> incidencias) {
         this.incidencias = incidencias;
     }

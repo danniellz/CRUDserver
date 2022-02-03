@@ -84,7 +84,7 @@ public class Incidencia implements Serializable {
     @Enumerated(EnumType.STRING)
     private EstadoIncidencia estado;
 
-    @XmlTransient//Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con el cliente
+    //@XmlTransient//Si la quitas la anotacion  aparencen toda su informcaion que esta relacionada con el cliente
     public Cliente getCliente() {
         return cliente;
     }
