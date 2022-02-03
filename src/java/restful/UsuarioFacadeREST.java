@@ -17,6 +17,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
+import javax.mail.MessagingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
@@ -237,27 +238,27 @@ public class UsuarioFacadeREST extends AbstractFacade<Usuario> {
     @Path("Nueva Contrasenia/{email}")
     @Produces({MediaType.APPLICATION_XML})
     public void resetPasswordByLogin(@PathParam("email") String email) {
-        Usuario usuarios = null;
-
-        String nuevaContra = "1234";
         try {
-            usuarios = buscarUsuarioPorEmailV2(email);
+            Usuario usuario = (Usuario) em.createNamedQuery("buscarUsuarioPorEmail").setParameter("email", email).getSingleResult();
+            if (usuario!=null) {
+                //generar nueva contraseña
+                Random rand = new Random(); //instance of random class
 
-            if (usuarios.getLogin().isEmpty()) {
-                LOGGER.info("No existe el email");
-            } else {
-                LOGGER.info("*************CAMBIANDO CONTRASEÑA***************+");
-                System.out.println(nuevaContra);
-                String contra = (nuevaContra);
-                contra = Hash.cifradoSha(contra);
-                usuarios.setPassword(contra);
-                actualizar(usuarios);
-                LOGGER.info("************* CONTRASEÑA ACTUALIZADA***************+");
-                // EnvioEmail.enviarMail(usuarios.getEmail(), "Reset de Contraseña", nuevaContra);
+              
+                
+               // int int_random = rand.nextInt(99999999 - 00000000) + 99999999;
+                String nuevaContra = generarContrasenia();
+                String contra = Hash.cifradoSha(nuevaContra);
 
+                usuario.setPassword(contra);
+                EnvioEmail.enviarMail(usuario.getEmail(), "Reset de Contraseña", nuevaContra);
+                if (!em.contains(usuario)) {
+                    em.merge(usuario);
+                }
+                em.flush();
             }
 
-        } catch (Exception e) {
+        } catch (MessagingException e) {
             throw new InternalServerErrorException(e);
         }
     }
