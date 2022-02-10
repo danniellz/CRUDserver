@@ -54,8 +54,7 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     @Override
     @Consumes({MediaType.APPLICATION_XML})
     public void create(Trabajador entity) {
-        entity.setPassword(descifrarContrasena(entity.getPassword()));
-        entity.setPassword(cifrarContrasena(entity.getPassword()));
+        entity.setPassword(Hash.cifradoSha(entity.getPassword()));
         try {
             super.create(entity);
         } catch (CreateException ex) {
@@ -68,8 +67,7 @@ public class TrabajadorFacadeREST extends AbstractFacade<Trabajador> {
     @Consumes({MediaType.APPLICATION_XML})
     public void edit(Trabajador entity) {
         // entity.setPassword(Hash.cifradoSha(Hash.desencriptarContrasenia(entity.getPassword())));
-        entity.setPassword(descifrarContrasena(entity.getPassword()));
-        entity.setPassword(cifrarContrasena(entity.getPassword()));
+        entity.setPassword(Hash.cifradoSha(entity.getPassword()));
         try {
             LOGGER.info("TrabajadorFacadeREST: Editando trabajador");
             super.edit(entity);
